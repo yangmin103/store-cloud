@@ -11,7 +11,8 @@
 		http://drools.org/schema/drools-spring http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-container/drools-spring/src/main/resources/org/drools/container/spring/drools-spring-1.0.0.xsd
 		http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd"
 	default-lazy-init="true">
-
+	
+	<!-- 
 	<drools:kbase id="kbase">
 		<drools:resources>
 			<drools:resource type="DRL"	source="classpath:rule/send-by-state.drl" />
@@ -19,5 +20,5 @@
 	</drools:kbase>
 
 	<drools:ksession id="ksession" type="stateful" kbase="kbase" />
-
+ -->
 </beans>
