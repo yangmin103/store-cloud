@@ -77,13 +77,19 @@ public class TradeAdapter {
 		trade.setBuyerEmail(tTrade.getBuyerEmail());
 		trade.setBuyerAlipayNo(tTrade.getBuyerAlipayNo());
 		trade.setBuyerNick(tTrade.getBuyerNick());
-		trade.setBuyerMemo(tTrade.getBuyerMemo());
-		trade.setBuyerMessage(tTrade.getBuyerMessage());
-		trade.setHasBuyerMessage(tTrade.getHasBuyerMessage());
-		trade.setSellerMemo(tTrade.getSellerMemo());
 		trade.setSellerPhone(tTrade.getSellerPhone());
 		trade.setSellerMobile(tTrade.getSellerMobile());
 		trade.setTid(tTrade.getTid());
+		
+		// 备注信息
+		if (tTrade.getHasBuyerMessage()) {
+			trade.setHasBuyerMessage(true);
+			com.taobao.api.domain.Trade  topTrade = topApi.getTrade(tTrade.getTid(), "buyer_message", "buyer_memo", "seller_memo");
+			trade.setBuyerMemo(topTrade.getBuyerMemo());
+			trade.setBuyerMessage(topTrade.getBuyerMessage());
+			trade.setSellerMemo(topTrade.getSellerMemo());
+		}
+
 		
 		// 子订单适配
 		List<Order> orders = tTrade.getOrders();

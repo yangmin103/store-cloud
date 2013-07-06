@@ -38,8 +38,8 @@ import com.taobao.api.ApiException;
 @Transactional(readOnly = true)
 public class ShipOrderService {
 
-	// 默认查询条数
-	private static final int DEFAULT_FETCH_ROWS = 200;
+	// 默认查询待打单条数
+	private static final int DEFAULT_FETCH_ROWS = 500;
 
 	@Autowired
 	private ShipOrderJpaDao orderJpaDao;

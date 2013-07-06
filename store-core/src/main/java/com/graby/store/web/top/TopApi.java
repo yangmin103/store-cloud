@@ -384,6 +384,23 @@ public class TopApi {
 		throwIfError(resp);
 		return resp.getTrade();
 	}
+	
+	/**
+	 * 获取交易详细信息
+	 * 
+	 * @param tid
+	 * @return
+	 * @throws ApiException
+	 */
+	public Trade getTrade(Long tid, String... field) throws ApiException {
+		TradeFullinfoGetRequest req = new TradeFullinfoGetRequest();
+		String fields = com.graby.store.util.StringUtils.concat(field);
+		req.setFields(fields);
+		req.setTid(tid);
+		TradeFullinfoGetResponse resp = client.execute(req, sessionKey());
+		throwIfError(resp);
+		return resp.getTrade();
+	}
 
 	/**
 	 * 用户调用该接口可实现自己联系发货（线下物流），使用该接口发货，交易订单状态会直接变成卖家已发货。不支持货到付款、在线下单类型的订单。

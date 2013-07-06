@@ -13,9 +13,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.graby.store.base.GroupMap;
+import com.graby.store.entity.ShipOrder;
 import com.graby.store.entity.Trade;
 import com.graby.store.entity.TradeMapping;
 import com.graby.store.service.trade.TradeService;
+import com.graby.store.service.wms.ShipOrderService;
 import com.graby.store.web.auth.ShiroContextUtils;
 import com.graby.store.web.top.TradeTrace;
 import com.taobao.api.ApiException;
@@ -32,6 +34,9 @@ public class TradeController {
 
 	@Autowired
 	private TradeService tradeService;
+	
+	@Autowired
+	private ShipOrderService shipOrderService;
 	
 	/**
 	 * 活动专场 用于大批量团购
@@ -135,6 +140,34 @@ public class TradeController {
 		model.addAttribute("trades", trades);
 		return "trade/received";
 	}
+	
+	/**
+	 * 当前用户仓库已接收订单列表
+	 * 
+	 * @return
+	 * @throws ApiException
+	 */
+	@RequestMapping(value = "/search")
+	public String search() {
+		return "trade/search";
+	}
+	
+	@RequestMapping(value = "/search/ajax")
+	public String search(@RequestParam(value = "q", defaultValue = "")String q,	Model model) {
+		List<ShipOrder> orders = shipOrderService.findSendOrderByQ(q);
+		List<Entry> entrys = new ArrayList<Entry>();
+		for (ShipOrder shipOrder : orders) {
+			Entry entry = new Entry();
+			Trade tarde = tradeService.getTrade(shipOrder.getTradeId());
+			entry.setOrder(shipOrder);
+			entry.setTrade(tarde);
+			entrys.add(entry);
+		}
+		model.addAttribute("entrys", entrys);
+		return "trade/searchResult";
+	}
+	
+	
 
 	/**
 	 * 等待用户签收列表
@@ -181,6 +214,23 @@ public class TradeController {
 		model.addAttribute("array", ii);
 		return "trade/test";
 	}
+	
+	public class Entry {
+		private Trade trade;
+		private ShipOrder order;
+		public Trade getTrade() {
+			return trade;
+		}
+		public ShipOrder getOrder() {
+			return order;
+		}
+		public void setTrade(Trade trade) {
+			this.trade = trade;
+		}
+		public void setOrder(ShipOrder order) {
+			this.order = order;
+		}
+	}	
 
 //	/**
 //	 * 根据淘宝交易ID批量创建系统交易订单

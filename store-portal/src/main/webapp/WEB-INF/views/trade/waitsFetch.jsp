@@ -105,6 +105,7 @@
 			<th>买家</th>
 			<th>收货地址</th>
 			<th>商品(库存)</th>
+			<th>备注</th>
 			<th><input type="checkbox" id="checkAll" name="checkAll"/> 全选</th>
 			</tr></thead>
 			<tbody>
@@ -153,6 +154,15 @@
 						</div>
 					</td>
 					<td>
+						<c:if test="${trade.hasBuyerMessage}">
+							买家：${trade.buyerMessage} . ${trade.buyerMemo} <br>
+							卖家:${trade.sellerMemo}
+						</c:if>
+						<c:if test="${!trade.hasBuyerMessage}">
+							无备注
+						</c:if>				
+					</td>					
+					<td>
 						<input type='checkbox' id='trade_select' name='trade_select[]' value='${trade.tid}' />
 					</td>
 				</tr>
@@ -173,6 +183,7 @@
 			<th>收货人</th>
 			<th>收货地址</th>
 			<th>商品</th>
+			<th>是否备注</th>
 			</tr></thead>
 			<tbody>
 			<c:forEach items="${failed}" var="trade">
@@ -226,7 +237,16 @@
 							</span>
 							<br>
 						</c:forEach>
-					</td>			
+					</td>		
+					<td>
+						<c:if test="${trade.hasBuyerMessage}">
+							买家：${trade.buyerMessage} . ${trade.buyerMemo} <br>
+							卖家:${trade.sellerMemo}
+						</c:if>
+						<c:if test="${!trade.hasBuyerMessage}">
+							无备注
+						</c:if>	
+					</td>	
 				</tr>
 			</c:forEach>
 			</tbody>

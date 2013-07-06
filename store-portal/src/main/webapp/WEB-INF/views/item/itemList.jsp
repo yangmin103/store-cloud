@@ -53,6 +53,11 @@
 	</script>
 
 <body>
+
+	<c:if test="${empty page}">
+		<c:set var="page" value="0"/>
+	</c:if>
+	
 	<c:if test="${not empty message}">
 		<div id="message" class="alert alert-success"><button data-dismiss="alert" class="close">×</button>${message}</div>
 	</c:if>

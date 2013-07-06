@@ -1,4 +1,4 @@
-package com.graby.store.portal.user;
+package com.graby.store.user;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
