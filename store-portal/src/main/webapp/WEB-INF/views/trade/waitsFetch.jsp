@@ -183,7 +183,7 @@
 			<th>收货人</th>
 			<th>收货地址</th>
 			<th>商品</th>
-			<th>是否备注</th>
+			<th>备注</th>
 			</tr></thead>
 			<tbody>
 			<c:forEach items="${failed}" var="trade">
