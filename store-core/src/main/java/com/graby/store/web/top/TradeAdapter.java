@@ -82,7 +82,7 @@ public class TradeAdapter {
 		trade.setTid(tTrade.getTid());
 		
 		// 备注信息
-		if (tTrade.getHasBuyerMessage()) {
+		if (tTrade.getHasBuyerMessage() != null && tTrade.getHasBuyerMessage() == true) {
 			trade.setHasBuyerMessage(true);
 			com.taobao.api.domain.Trade  topTrade = topApi.getTrade(tTrade.getTid(), "buyer_message", "buyer_memo", "seller_memo");
 			trade.setBuyerMemo(topTrade.getBuyerMemo());
