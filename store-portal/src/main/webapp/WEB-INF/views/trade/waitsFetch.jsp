@@ -155,8 +155,8 @@
 					</td>
 					<td>
 						<c:if test="${trade.hasBuyerMessage}">
-							买家：${trade.buyerMessage} . ${trade.buyerMemo} <br>
-							卖家:${trade.sellerMemo}
+							买家：${trade.buyerMessage}  ${trade.buyerMemo} <br>
+							卖家：${trade.sellerMemo}
 						</c:if>
 						<c:if test="${!trade.hasBuyerMessage}">
 							无备注

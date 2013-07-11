@@ -85,10 +85,13 @@ public class TradeAdapter {
 		if (tTrade.getHasBuyerMessage() != null && tTrade.getHasBuyerMessage() == true) {
 			trade.setHasBuyerMessage(true);
 			com.taobao.api.domain.Trade  topTrade = topApi.getTrade(tTrade.getTid(), "buyer_message", "buyer_memo", "seller_memo");
-			trade.setBuyerMemo(topTrade.getBuyerMemo());
-			trade.setBuyerMessage(topTrade.getBuyerMessage());
-			trade.setSellerMemo(topTrade.getSellerMemo());
+			tTrade.setBuyerMemo(topTrade.getBuyerMemo());
+			tTrade.setBuyerMessage(topTrade.getBuyerMessage());
+			tTrade.setSellerMemo(topTrade.getSellerMemo());
 		}
+		trade.setBuyerMemo(tTrade.getBuyerMemo());
+		trade.setBuyerMessage(tTrade.getBuyerMessage());
+		trade.setSellerMemo(tTrade.getSellerMemo());
 
 		
 		// 子订单适配
