@@ -1,16 +1,18 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
+<c:if test="${empty param.page}">
+	<c:set var="param.page" value="0"/>
+</c:if>
 
-<head>
 	<script type="text/javascript">
-		function map(itemid, tbitemid) {
+		function mapping(itemid, tbitemid) {
 			var skuid = $("#skus_" + tbitemid + " option:selected").val();
 			var sku = "0";
 			if (typeof skuid != "undefined"){
     			sku = skuid; 
 			}
-			var url = "${ctx}/item/relate/" + itemid + "/" + + tbitemid + "/" + sku + "?page=" + ${page};
+			var url = "${ctx}/item/relate/" + itemid + "/" + + tbitemid + "/" + sku + "?page=" + ${param.page};
 			window.location = url;
 		}
 		
@@ -22,7 +24,7 @@
 		  	});
 		});
 	</script>
-</head>
+
 
 <body>
 	
@@ -50,7 +52,7 @@
 					</c:forEach>
 					</select>
 				</c:if>
-				<td><a href="javascript:map(${item.id},${tbitem.numIid})">添加</a></td>
+				<td><a href="javascript:mapping(${item.id},${tbitem.numIid})">添加</a></td>
 			</tr>
 		</c:forEach>
 		</tbody>
