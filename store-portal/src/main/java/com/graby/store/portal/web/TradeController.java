@@ -3,6 +3,7 @@ package com.graby.store.portal.web;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -100,9 +101,11 @@ public class TradeController {
 	public String refunds(Model model) throws Exception {
 		List<Refund> refunds = tradeService.fetchRefunds();
 		List<RefundEntry> entrys = new ArrayList<RefundEntry>();
-		for (Refund refund : refunds) {
-			TradeMapping mapping = tradeService.getRelatedMapping(refund.getTid());
-			entrys.add(new RefundEntry(refund, mapping));
+		if (CollectionUtils.isNotEmpty(refunds)) {
+			for (Refund refund : refunds) {
+				TradeMapping mapping = tradeService.getRelatedMapping(refund.getTid());
+				entrys.add(new RefundEntry(refund, mapping));
+			}
 		}
 		model.addAttribute("refunds", entrys);
 		return "trade/refunds";
