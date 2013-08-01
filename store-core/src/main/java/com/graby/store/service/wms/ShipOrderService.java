@@ -327,7 +327,7 @@ public class ShipOrderService {
 			ShipOrderDetail detail = iterator.next();
 			buf.append(detail.getItemTitle() + detail.getSkuPropertiesName()).append("(" + detail.getNum() + ")件");
 			if (iterator.hasNext()) {
-				buf.append(",");
+				buf.append(",\n");
 			}
 		}
 		if (buf.length() > 80) {
