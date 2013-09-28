@@ -14,21 +14,18 @@
 
 	<legend></legend>
 	
-	<form action="${ctx}/trade/waits">
-	<!-- 
-	<small>${fn:length(trades)}条待审核订单</small>
-	 -->
-	<select id="selectUser" name="userId">
-		<option value='0'>全部</option> 
-		<c:forEach items="${users}" var="user">
-			<option value='${user.id}'  
-			<c:if test="${user.id == userId}">
-				selected='selected'
-			</c:if>
-			>${user.shopName}</option>
-		</c:forEach>
-	</select>
-	<button type="submit" class="btn btn-primary">查询</button>
+	<form action="${ctx}/trade/waits" class="form-inline">
+		<select id="selectUser" name="userId">
+			<option value='0'>全部</option> 
+			<c:forEach items="${users}" var="user">
+				<option value='${user.id}'  
+				<c:if test="${user.id == userId}">
+					selected='selected'
+				</c:if>
+				>${user.shopName}</option>
+			</c:forEach>
+		</select>
+	   	<button type="submit" class="btn btn-primary">查询</button>
 	</form>
 	
 	<table id="contentTable" class="table table-striped table-condensed"  >

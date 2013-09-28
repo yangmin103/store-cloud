@@ -116,18 +116,38 @@
 			trade_from AS "tradeFrom" ,a.buyer_nick AS "buyerNick" ,receiver_name AS "receiverName" ,
 			receiver_phone AS "receiverPhone" ,shipping_type AS "shippingType" ,receiver_district AS "receiverDistrict" ,STATUS AS "status" ,
 			receiver_mobile AS "receiverMobile" ,buyer_email AS "buyerEmail" ,receiver_city AS "receiverCity" ,
-			has_buyer_message AS "hasBuyerMessage" ,centro_id AS "centro.id" ,lg_aging_type AS "lgAgingType" ,
+			centro_id AS "centro.id" ,lg_aging_type AS "lgAgingType" ,
+			has_buyer_message AS "hasBuyerMessage" , buyer_message as "buyerMessage", buyer_memo as "buyerMemo", seller_memo as "sellerMemo",
 			receiver_zip AS "receiverZip" ,lg_aging AS "lgAging" ,user_id AS "user.id" ,buyer_alipay_no AS "buyerAlipayNo" ,
-			receiver_state AS "receiverState"
+			receiver_state AS "receiverState", 
+			CONCAT(d.title) as "itemTitles"
 		FROM sc_trade a  
 			LEFT JOIN sc_user b ON b.id = a.user_id 
+			LEFT JOIN sc_trade_order c on c.trade_id = a.id 
+			LEFT JOIN sc_item d on d.id = c.item_id
 		WHERE a.status='TRADE_WAIT_CENTRO_AUDIT' 
 		<if test="userId != null and userId != 0 ">  
            and a.user_id= #{userId}  
         </if>  
-		
+		<if test="receiverState != null">  
+           and a.receiver_state= #{receiverState}  
+        </if> 
+		<if test="receiverCity != null">  
+           and a.receiver_city= #{receiverCity}  
+        </if>
+		<if test="itemTitle != null">  
+           and d.title like #{itemTitle}  
+        </if>        
 		limit 200
 	</select>
+	
+	<select id="findWaitAuditCitys" resultType="map">
+		SELECT 
+			receiver_city AS "receiverCity",
+			receiver_state AS "receiverState"
+		FROM sc_trade a
+		WHERE a.status='TRADE_WAIT_CENTRO_AUDIT' 
+	</select>	
 	
 	<select id="findWaitAuditTradeIds" resultType="long">
 		SELECT id
