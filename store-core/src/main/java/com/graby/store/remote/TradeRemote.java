@@ -61,6 +61,13 @@ public interface TradeRemote {
 	 * @return
 	 */
 	List<Trade> findWaitAuditTradesBy(Map<String, Object> params);
+	
+	/**
+	 * 查询待处理订单城市列表
+	 * @return
+	 */
+	List<Map<String,String>> findWaitAuditCitys();
+	
 
 	/**
 	 * 查询用户交易

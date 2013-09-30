@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.graby.store.admin.util.CityJson;
 import com.graby.store.entity.Item;
 import com.graby.store.entity.ShipOrder;
 import com.graby.store.entity.Trade;
@@ -72,6 +75,52 @@ public class AdminTradeController {
 		return "/admin/tradeWaits";
 	}
 	
+	@RequestMapping(value = "waits/search", method=RequestMethod.GET)
+	public String waitAuditsHead(
+			Model model) throws ApiException {
+		
+		List<User> users = userRemote.findAll();
+		model.addAttribute("users", users);
+		
+		CityJson cj = new CityJson();
+		List<Map<String,String>> citys = tradeRemote.findWaitAuditCitys();
+		if (CollectionUtils.isNotEmpty(citys)) {
+			for (Map<String, String> cityMap : citys) {
+				cj.putCity(cityMap.get("receiverState"), cityMap.get("receiverCity"));
+			}
+		}
+		model.addAttribute("cityJson", cj.getJson());
+		
+		return "/admin/tradeWaitSearch";
+	}
+	
+	@RequestMapping(value = "ajax/waits", method=RequestMethod.POST)
+	public String waitAuditsBatch(
+			@RequestParam(value = "userId", defaultValue = "0") Long userId,
+			@RequestParam(value = "state", defaultValue="") String state,
+			@RequestParam(value = "city", defaultValue="") String city,
+			@RequestParam(value = "itemTitle", defaultValue="") String itemTitle,
+			Model model) throws ApiException {
+		
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("userId", userId);
+		if (StringUtils.isNotEmpty(state) && !state.equals("请选择")) {
+			params.put("receiverState", state);
+		}
+		if (StringUtils.isNotEmpty(city) && !city.equals("请选择") && !city.equals("null")) {
+			params.put("receiverCity", city);
+		}
+		if (StringUtils.isNotBlank(itemTitle)) {
+			params.put("itemTitle", "%"+itemTitle+"%");
+		}	
+		List<Trade> trades = tradeRemote.findWaitAuditTradesBy(params);
+		model.addAttribute("trades", trades);
+		
+		Map<String, String> expressMap = expressRemote.getExpressMap();
+		model.addAttribute("expressCompanys", expressMap);
+		return "/admin/tradeWaitsDetail";
+	}
+	
 	/**
 	 * 审核订单页面
 	 * @return
@@ -116,20 +165,34 @@ public class AdminTradeController {
 	 */
 	@RequestMapping(value = "mkship", method=RequestMethod.POST)
 	public String mkship(
+			@RequestParam("tradeId") Long tradeId, 
 			@RequestParam(value="expressCompany", defaultValue="-1") String expressCompany,
-			@RequestParam("tradeId") Long tradeId, Model model) {
+			Model model) {
+		ShipOrder sendOrder = auditOneTrade(tradeId, expressCompany);
+		model.addAttribute("sendOrder", sendOrder);
+		return "redirect:/trade/waits?userId=" + sendOrder.getCreateUser().getId();
+	}
+
+	private ShipOrder auditOneTrade(Long tradeId, String expressCompany) {
 		ShipOrder sendOrder = tradeRemote.createSendShipOrderByTradeId(tradeId);
 		if (!expressCompany.equals("-1")) {
 			shipOrderRemote.chooseExpress(sendOrder.getId(), expressCompany);
 		}
-		model.addAttribute("sendOrder", sendOrder);
-		return "redirect:/trade/waits?userId=" + sendOrder.getCreateUser().getId();
+		return sendOrder;
 	}
 	
-	/**
-	 * 活动专场 用于大批量团购
-	 * @return
-	 */
+	@RequestMapping(value = "mkships", method=RequestMethod.POST)
+	public String batchMkship(
+			@RequestParam("tradeIds") Long[] tradeIds, 
+			@RequestParam(value="expressCompany", defaultValue="-1") String expressCompany,
+			Model model) {
+		for (Long tradeId : tradeIds) {
+			auditOneTrade(tradeId, expressCompany);
+		}
+		return "empty";
+	}
+	
+	
 	@RequestMapping(value = "special/waits")
 	public String special() {
 		return "/admin/tradeSpecialAudit";

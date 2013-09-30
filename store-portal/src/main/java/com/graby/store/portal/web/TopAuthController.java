@@ -33,10 +33,10 @@ public class TopAuthController {
 	// 测试环境
 	
 	@Value("${top.appkey}")
-	private String clientId="21521634";
+	private String clientId="21397471";
 	
 	@Value("${top.appSecret}")
-	private String clientSecret="174935dbb2440d5b4d1349da43fc3640";
+	private String clientSecret="e7238e5ec82b6ef65e78ad108c48b42f";
 	
 	@Value("${top.oauth.token}")
 	private String tokenUrl="https://oauth.taobao.com/token";

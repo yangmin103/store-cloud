@@ -241,6 +241,14 @@ public class TradeService {
 	}
 	
 	/**
+	 * 查询待处理订单城市列表
+	 * @return
+	 */
+	public List<Map<String,String>> findWaitAuditCitys() {
+		return tradeDao.findWaitAuditCitys();
+	}
+	
+	/**
 	 * 查询用户交易订单 
 	 * @param userId 用户ID
 	 * @return

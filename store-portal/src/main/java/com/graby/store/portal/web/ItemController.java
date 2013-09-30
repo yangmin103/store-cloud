@@ -47,7 +47,7 @@ public class ItemController {
 		Long userId = ShiroContextUtils.getUserid();
 		Page<Item> items = itemService.findPageUserItems(userId, q, pageNumber, PAGE_SIZE);
 		model.addAttribute("items", items);
-		//model.addAttribute("page", pageNumber);
+		model.addAttribute("page", pageNumber);
 		return "item/itemList";
 	}
 

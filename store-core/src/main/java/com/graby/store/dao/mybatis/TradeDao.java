@@ -67,6 +67,12 @@ public interface TradeDao {
 	public List<Trade> findWaitAuditTradesBy(Map<String, Object> map);
 	
 	/**
+	 * 查询待处理订单城市列表
+	 * @return
+	 */
+	public List<Map<String,String>> findWaitAuditCitys();
+	
+	/**
 	 * 查询所有待审核交易订单
 	 * @param centroId
 	 * @return

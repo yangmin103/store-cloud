@@ -121,7 +121,7 @@
 
 	<select id="getSendOrderIdByTradeId" resultType="long">
 		SELECT id
-		FROM sc_ship_order WHERE trade_id=#{0} 
+		FROM sc_ship_order WHERE trade_id=#{0} for update
 	</select>	
 	
 	<update id="increaseEntryOrderDetail"> 

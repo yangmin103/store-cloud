@@ -106,7 +106,7 @@
 			<th>收货地址</th>
 			<th>商品(库存)</th>
 			<th>备注</th>
-			<th><input type="checkbox" id="checkAll" name="checkAll"/> 全选</th>
+			<th class="span1"><input type="checkbox" id="checkAll" name="checkAll"/> 全选</th>
 			</tr></thead>
 			<tbody>
 			<c:forEach items="${useable}" var="trade">
@@ -155,8 +155,8 @@
 					</td>
 					<td>
 						<c:if test="${trade.hasBuyerMessage}">
-							买家：${trade.buyerMessage} . ${trade.buyerMemo} <br>
-							卖家:${trade.sellerMemo}
+							买家：${trade.buyerMessage}  ${trade.buyerMemo} <br>
+							卖家：${trade.sellerMemo}
 						</c:if>
 						<c:if test="${!trade.hasBuyerMessage}">
 							无备注
