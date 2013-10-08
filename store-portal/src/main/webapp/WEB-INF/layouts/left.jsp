@@ -27,4 +27,8 @@
 		<a href="${ctx}/trade/traces">物流信息追踪</a>
 		-->
 	</div>
+	<h1>交易记录</h1>
+	<div class="submenu">
+		<a href="${ctx}/report/sellout">售出商品</a>
+	</div>	
 </div>

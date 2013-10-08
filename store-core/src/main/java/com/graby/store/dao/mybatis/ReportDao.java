@@ -1,6 +1,5 @@
 package com.graby.store.dao.mybatis;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +19,6 @@ public interface ReportDao {
 	 * @param to 结束日期
 	 * @return
 	 */
-	List<Map<String, Object>> findUserSellouts(long userId, Date from, Date to);
+	List<Map<String, Object>> sumUserSellouts(long userId, String from, String to);
 
 }
