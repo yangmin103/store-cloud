@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.graby.store.base.MessageContextHelper;
-import com.graby.store.entity.ShipOrder;
 import com.graby.store.service.trade.TradeService;
 import com.graby.store.service.wms.ShipOrderService;
 import com.taobao.api.ApiException;
