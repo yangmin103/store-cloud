@@ -29,7 +29,7 @@
 	</div>
 	<h1>统计查询</h1>
 	<div class="submenu">
-		<a href="${ctx}/report/sellout">售出商品</a>
+		<a href="${ctx}/report/sellout">商品统计</a>
 		<a href="${ctx}/report/ship">发货纪录</a>
 	</div>	
 </div>

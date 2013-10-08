@@ -30,7 +30,7 @@
        $(document).ready(function() {
           $('#reportrange').daterangepicker(
              {
-                startDate: moment().subtract('days', 29),
+                startDate: moment().subtract('days', 20),
                 endDate: moment(),
                 minDate: '2013/01/01',
                 maxDate: moment(),
