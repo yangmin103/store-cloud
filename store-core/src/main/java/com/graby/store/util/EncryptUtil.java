@@ -77,6 +77,8 @@ public class EncryptUtil {
 			+ "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ").toCharArray();
 
 	public static void main(String[] args) {
-		System.out.println(EncryptUtil.md5("亮晶晶善良一族"));
+		String s = "ead9ee96a6b63ae918b771bf673d6a5883df2e5a";
+		System.out.println(EncryptUtil.md5("admin"));
+		System.out.println(EncryptUtil.md5("admin").equals(s));
 	}
 }
