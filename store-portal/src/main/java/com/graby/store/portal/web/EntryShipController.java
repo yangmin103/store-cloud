@@ -33,7 +33,7 @@ import com.graby.store.web.auth.ShiroContextUtils;
 @RequestMapping(value = "/store/entry")
 public class EntryShipController {
 	
-	private static final int PAGE_SIZE = 15;
+	private static final int PAGE_SIZE = 100;
 	
 	@Autowired
 	private ShipOrderService shipOrderService;

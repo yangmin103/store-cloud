@@ -6,7 +6,7 @@
 
 <html>
 <head>
-	<title>快递运单单</title>
+	<title>快递运单</title>
 </head>
 
 <body>

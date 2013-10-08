@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.graby.store.base.MyBatisRepository;
+import com.graby.store.entity.ShipOrder;
 
 @MyBatisRepository
 public interface ReportDao {
@@ -19,6 +20,13 @@ public interface ReportDao {
 	 * @param to 结束日期
 	 * @return
 	 */
-	List<Map<String, Object>> sumUserSellouts(long userId, String from, String to);
-
+	List<Map<String, Object>> sumUserSellouts(Map<String, Object> parameters);
+	
+	/**
+	 * 查询用户发货单
+	 * @param parameters
+	 * @return
+	 */
+	List<ShipOrder> findOrderSellout(Map<String, Object> parameters);
+	long findOrderSelloutCount(Map<String, Object> parameters);
 }

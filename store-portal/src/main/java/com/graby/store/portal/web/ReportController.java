@@ -1,15 +1,20 @@
 package com.graby.store.portal.web;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.graby.store.entity.ShipOrder;
 import com.graby.store.service.report.ReportService;
 import com.graby.store.web.auth.ShiroContextUtils;
 
@@ -21,6 +26,8 @@ import com.graby.store.web.auth.ShiroContextUtils;
 @Controller
 @RequestMapping(value = "/report")
 public class ReportController {
+	
+	public static final int PAGE_SIZE= 30;
 
 	@Autowired
 	private ReportService reportService;
@@ -51,5 +58,46 @@ public class ReportController {
 		model.addAttribute("total", total);
 		return "report/selloutDetail";
 	}
+	
+
+	@RequestMapping(value = "/ship")
+	public String ship() throws Exception {
+		return "report/ship";
+	}
+	
+	@RequestMapping(value = "/ship/list")
+	public String ship(
+			@RequestParam(value = "page", defaultValue = "1") int page, 
+			@RequestParam(value = "startDate") String startDay,
+			@RequestParam(value = "endDate") String endDay,
+			Model model) throws Exception {
+		Long userId = ShiroContextUtils.getUserid();
+		Map<String, Object> p = new HashMap<String, Object>();
+		p.put("userId", userId);
+		p.put("startDate", startDay);
+		p.put("endDate", endDay);
+		
+		long count = reportService.findOrderSelloutCount(p);
+
+		int pageNo = page - 1;
+		int start = pageNo*PAGE_SIZE;
+		int offset = PAGE_SIZE;
+		p.put("start", start);
+		p.put("offset", offset);
+
+		List<ShipOrder> orders = reportService.findOrderSellout(p);
+		PageRequest pageable = new PageRequest((int)pageNo, (int)PAGE_SIZE);
+		Page<ShipOrder> pages = new PageImpl<ShipOrder>(orders, pageable, count);
+		model.addAttribute("orders", pages);
+		
+		String searchParams = "startDate=" + startDay + "&endDate=" + endDay;
+		model.addAttribute("searchParams", searchParams);
+		model.addAttribute("startDate", startDay);
+		model.addAttribute("endDate", endDay);
+		return "report/ship";
+	}
+	
+	
+	
 
 }
