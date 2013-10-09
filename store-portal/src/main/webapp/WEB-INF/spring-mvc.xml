@@ -46,7 +46,13 @@
 
 	<!-- 将无法mapping到Controller的path交给default servlet handler处理 -->
 	<mvc:default-servlet-handler />
-
+	
+	<!-- 报表 -->
+	<bean class="org.springframework.web.servlet.view.XmlViewResolver">
+		<property name="location" value="WEB-INF/jasper-views.xml"/>
+		<property name="order" value="0"/>
+	</bean>
+	
 	<!-- 定义JSP文件的位置 -->
 	<bean
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver">

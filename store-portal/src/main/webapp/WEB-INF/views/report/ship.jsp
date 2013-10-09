@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <html>
@@ -20,9 +21,16 @@
 <body>
 
     <div class="well" style="overflow: auto">
+    
+    <c:if test="${not empty orders}">
+    	共${total}条记录 
+    	<c:if test="${total > 0}">
+    		<a href="${ctx}/report/ship/report?startDate=${startDate}&endDate=${endDate}" target="_blank">导出报表(excel)</a>
+    	</c:if>
+    </c:if>
 
        <div id="reportrange" class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 5px; border: 1px solid #ccc">
-          发货纪录查询   <i class="glyphicon glyphicon-calendar icon-calendar icon-large"></i>
+          发货纪录查询 <i class="glyphicon glyphicon-calendar icon-calendar icon-large"></i>
           <span></span> <b class="caret"></b>
        </div>
 
@@ -88,6 +96,7 @@
 			<thead><tr>
 			<th>发货日期</th>
 			<th>买家昵称</th>
+			<th>淘宝订单交易号</th>
 			<th>运单号</th>
 			<th>收货人</th>
 			<th>商品</th>
@@ -97,6 +106,7 @@
 				<tr>
 					<td><fmt:formatDate value="${order.lastUpdateDate}" type="date" pattern="yyyy-MM-dd HH:mm"/></td>
 					<td>${order.buyerNick}</td>
+					<td>${order.remark}</td>
 					<td>${order.expressCompany}/${order.expressOrderno}</td>
 					<td>${order.receiverName}</td>
 					<td>

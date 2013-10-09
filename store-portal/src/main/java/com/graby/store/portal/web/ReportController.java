@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.graby.store.entity.ShipOrder;
 import com.graby.store.service.report.ReportService;
@@ -94,10 +95,31 @@ public class ReportController {
 		model.addAttribute("searchParams", searchParams);
 		model.addAttribute("startDate", startDay);
 		model.addAttribute("endDate", endDay);
+		model.addAttribute("total", count);
 		return "report/ship";
 	}
 	
-	
+	@RequestMapping(value = "ship/report")
+	public ModelAndView shipReport(			
+			@RequestParam(value = "startDate") String startDay,
+			@RequestParam(value = "endDate") String endDay,
+			@RequestParam(value = "format", defaultValue = "xls") String format) {
+		Map<String, Object> model = new HashMap<String, Object>();
+		
+		Long userId = ShiroContextUtils.getUserid();
+		Map<String, Object> p = new HashMap<String, Object>();
+		p.put("userId", userId);
+		p.put("startDate", startDay);
+		p.put("endDate", endDay);
+		p.put("start", 0);
+		p.put("offset", Integer.MAX_VALUE);
+		List<ShipOrder> orders = reportService.findOrderSellout(p);
+		model.put("data", orders);
+		model.put("format", format);
+		model.put("shopName", ShiroContextUtils.getCurrentUser().getShopname());
+		model.put("dateDesc", startDay + " ~ " + endDay);
+		return new ModelAndView("shipReport", model); 
+	}
 	
 
 }
