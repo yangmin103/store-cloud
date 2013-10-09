@@ -68,7 +68,7 @@
 		a.express_orderno as "expressOrderno"
 		FROM sc_ship_order a LEFT JOIN sc_user b ON a.create_userid = b.id
 		WHERE 
-		a.type='send' and a.status='SEND_FINISH'
+		a.type='send' and  (a.status='SEND_FINISH' or a.status='WAIT_BUYER_RECEIVED') 
 		<if test="userId != null">  
     		and a.`create_userid`= #{userId}  
         </if>
