@@ -136,10 +136,14 @@
 	
 	<select id="shipCount" resultType="map">
 		SELECT 
-		b.shop_name as "shopName",
-		b.id, 
-		count(0) as "num"
-		FROM sc_ship_order a LEFT JOIN sc_user b ON a.create_userid = b.id
+			b.id as "userId",
+			b.shop_name as "shopName",
+			b.id, 
+			count(0) as "num",
+			sum(c.num) as "items"
+		FROM sc_ship_order a 
+			LEFT JOIN sc_user b ON a.create_userid = b.id
+			left join sc_ship_order_detail c on c.order_id = a.id
 		WHERE 
 		a.type='send' and  (a.status='SEND_FINISH' or a.status='WAIT_BUYER_RECEIVED') 
 		<if test="userId != null">  

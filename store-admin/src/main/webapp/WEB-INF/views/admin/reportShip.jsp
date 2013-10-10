@@ -84,7 +84,7 @@
             format: 'YYYY-MM-DD',
             separator: ' to ',
             locale: {
-                applyLabel: '查询',
+                applyLabel: '确定',
                 cancelLabel: '取消',
                 fromLabel: '从',
                 toLabel: '至',

@@ -19,11 +19,11 @@ public class ReportService {
 	@Autowired
 	private ReportDao reportDao;
 	
-	public List<Map<String, Object>> sumUserSellouts(long userId, String from, String to) {
+	public List<Map<String, Object>> sumUserSellouts(long userId, String startDate, String endDate) {
 		Map<String, Object> p = new HashMap<String, Object>();
 		p.put("userId", userId);
-		p.put("startDate",from);
-		p.put("endDate", to);
+		p.put("startDate",startDate);
+		p.put("endDate", endDate);
 		return reportDao.sumUserSellouts(p);
 	}
 	

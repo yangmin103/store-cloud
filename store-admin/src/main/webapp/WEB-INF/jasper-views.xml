@@ -35,4 +35,9 @@
 		<property name="url" value="WEB-INF/reports/batchPick.jrxml"/>
 	</bean>	
 	
+	<!-- 发货记录 -->
+	<bean id="shipReport" class="org.springframework.web.servlet.view.jasperreports.JasperReportsMultiFormatView">
+		<property name="url" value="WEB-INF/reports/ship.jrxml"/>
+	</bean>	
+	
 </beans>
