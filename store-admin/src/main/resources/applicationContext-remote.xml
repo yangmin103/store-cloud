@@ -66,5 +66,10 @@
 		<property name="serviceUrl" value="user.call" />
 		<property name="serviceInterface" value="com.graby.store.remote.UserRemote" />
 	</bean>		
-
+	
+	<bean id="reportRemote" parent="remoteClient">
+		<property name="serviceUrl" value="report.call" />
+		<property name="serviceInterface" value="com.graby.store.remote.ReportRemote" />
+	</bean>
+			
 </beans>

@@ -15,9 +15,10 @@ public interface ReportDao {
 	 * itemName:商品名称
 	 * itemCount:售出总数
 	 * 
+	 * parameters
 	 * @param userId 用户ID
-	 * @param from 起始日期
-	 * @param to 结束日期
+	 * @param startDate 起始日期
+	 * @param endDate 结束日期
 	 * @return
 	 */
 	List<Map<String, Object>> sumUserSellouts(Map<String, Object> parameters);
@@ -29,4 +30,15 @@ public interface ReportDao {
 	 */
 	List<ShipOrder> findOrderSellout(Map<String, Object> parameters);
 	long findOrderSelloutCount(Map<String, Object> parameters);
+	
+	
+	/**
+	 * 统计商家发货单
+	 * @param parameters
+	 *  userId 
+	 *  startDate
+	 *  endDate
+	 * @return
+	 */
+	List<Map<String, Object>> shipCount(Map<String, Object> parameters);
 }

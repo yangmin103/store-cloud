@@ -133,6 +133,24 @@
 		FROM sc_ship_order_detail a LEFT JOIN sc_item b ON a.item_id = b.id		
 		WHERE order_id =  #{id}
 	</select>	
+	
+	<select id="shipCount" resultType="map">
+		SELECT 
+		b.shop_name as "shopName",
+		b.id, 
+		count(0) as "num"
+		FROM sc_ship_order a LEFT JOIN sc_user b ON a.create_userid = b.id
+		WHERE 
+		a.type='send' and  (a.status='SEND_FINISH' or a.status='WAIT_BUYER_RECEIVED') 
+		<if test="userId != null">  
+    		and a.`create_userid`= #{userId}  
+        </if>
+		<![CDATA[
+		and a.`create_date` > date_format(#{startDate},'%Y-%m-%d %H:%i')
+		and a.`create_date` <= date_format(#{endDate},'%Y-%m-%d %H:%i')
+		]]>
+		group by a.`create_userid`
+	</select>	
 
 
 </mapper> 
