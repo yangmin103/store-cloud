@@ -7,7 +7,7 @@
 <body>
 
 <c:if test="${empty results}">
-	无库存信息
+	无发货信息
 </c:if>
 
 <c:if test="${not empty results}">

@@ -97,9 +97,8 @@
          function(start, end) {
            console.log("Callback has been called!");
            $('#reportrange span').html(start.format('YYYY/MM/DD') + ' - ' + end.format('YYYY/MM/DD'));
-           //getReport($('#selectUser').val(), start.format('YYYY-MM-DD')+" 00:00", end.format('YYYY-MM-DD')+" 23:59");
-           $("#startDate").val(start.format('YYYY-MM-DD'));
-           $("#endDate").val(end.format('YYYY-MM-DD'));
+           $("#startDate").val(start.format('YYYY-MM-DD')+" 00:00");
+           $("#endDate").val(end.format('YYYY-MM-DD')+" 23:59");
          }
       );
       //Set the initial state of the picker label
