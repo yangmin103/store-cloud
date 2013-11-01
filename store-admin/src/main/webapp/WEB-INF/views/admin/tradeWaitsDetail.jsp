@@ -7,11 +7,17 @@
 
 <html>
 <head>
-	<script type="text/javascript">
-	
+</head>
+<script type="text/javascript">
 	$(function() {
+   		// Loading 按钮
+		$('#loadingDiv')
+		.hide();
+	});
+	
+	$(document).ready(function() {
 		// 全选事件
-	   	$("#checkAll").click(function() {
+	   	$("#selectAll").live('click',function() {
 	   		if($(this).attr("checked") == "checked") {
 	   			$("input[name='trade_select[]']").each(function() {
 	            	$(this).attr("checked", true);
@@ -22,17 +28,22 @@
 	        	});
 	   		}
 		});
-	});
-	
-	$(document).ready(function() {
+		
 		// 打开淘宝商品列表关联
 		$("a[data-toggle=modal]").click(function(){
-			//postSelected();
+			var chk_value =[];  
+	  		$('input[name="trade_select[]"]:checked').each(function(){  
+	   		chk_value.push($(this).val());
+	  		});
+	  		if (chk_value.length==0) {
+	  			alert('你还没有选择任何订单！');
+	  			return;
+	  		}
 		});	
 		
 		$('#confirm').confirm({
 			'title' : '删除',
-			'message' : '确认删除该商品',
+			'message' : '确认删除该订单',
 		});			
 	});
 	
@@ -41,36 +52,27 @@
 	   	var chk_value =[];  
 	  		$('input[name="trade_select[]"]:checked').each(function(){  
 	   		chk_value.push($(this).val());
-  		});  
+  		});
   		if (chk_value.length==0) {
-  			//alert('你还没有选择任何订单！');
-  		} else {
-  			// 分段发送至仓库
-  			var arr = new Array();
-  			var size=200;
-  			for(var i = 1, len = chk_value.length; i<= len; i++) {
-  				arr.push(chk_value[i-1]);
-  				if (i%size == 0 ) {
-  					auditTrade(arr, expressId);
-  					arr=[];
-  				} else if (i == len) {
-  					auditTrade(arr, expressId);
-  				}
- 			}
+  			alert('你还没有选择任何订单！');
+  			return;
   		}
+  		auditTrade(chk_value, expressId);
 	}
 
 	// 审核		
 	function auditTrade(tradeIds, express) {
+		$('#loadingDiv').show();
+		$('#myModal').hide();
  		var action = "${ctx}/trade/mkships?tradeIds=" + tradeIds + "&expressCompany=" + express;
-	   	$.post(action, function(data){
+ 		window.location.href=action;
+	   	//$.post(action, function(data){
 			//$('#myModal').modal('hide')；
-		   	$("#body").html(data);
-	   	});
+		//   	$("#body").html(data);
+	   	//});
 	}
 	
 	</script>
-</head>
 <body id="body">
 	
 	<table id="contentTable" class="table table-striped table-condensed"  >
@@ -78,10 +80,10 @@
 		<th>来源商铺</th>
 		<th>建单时间</th>
 		<th>交易订单号</th>
-		<th>收货地址</th>
-		<th>订购商品</th>
-		<th>备注</th>	
-		<th><input type="checkbox" id="checkAll" name="checkAll"/> 全选</th>
+		<th class="span3">收货地址</th>
+		<th class="span4">订购商品</th>
+		<th class="span3">备注</th>	
+		<th><input type="checkbox" id="selectAll" name="selectAll"/> 全选</th>
 		</tr></thead>
 		<tbody>
 		<c:forEach items="${trades}" var="trade">
@@ -100,6 +102,7 @@
 					卖家：${trade.sellerMemo}
 				</td>
 				<td>
+					${trade.id}
 					<input type='checkbox' id='trade_select' name='trade_select[]' value='${trade.id}' />
 				</td>
 			</tr>
@@ -111,7 +114,9 @@
 	<div class="row">
 	  	<div class="pull-right">
 	  		<a class="btn btn-primary" data-toggle="modal" href="#myModal" >批量审核</a>
+	  		<!-- 
 	  		<a id="btn_pick" href="#" class="btn btn-info">批量删除</a>&nbsp;&nbsp;&nbsp;&nbsp;
+	  		 -->
 	  	</div>
 	</div>
 	
@@ -136,6 +141,10 @@
 			<a href="#" class="btn" data-dismiss="modal">关闭</a>
 	    	<a href="javascript:postSelected();" class="btn btn-primary">审核通过</a>
 	  	</div>
+	</div>
+	
+	<div id="loadingDiv" class="hint">
+		<img src = "${ctx}/static/images/fetch.gif">
 	</div>
 	
 </body>

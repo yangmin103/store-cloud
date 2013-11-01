@@ -2,6 +2,7 @@ package com.graby.store.admin.web;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -181,7 +182,7 @@ public class AdminTradeController {
 		return sendOrder;
 	}
 	
-	@RequestMapping(value = "mkships", method=RequestMethod.POST)
+	@RequestMapping(value = "mkships")
 	public String batchMkship(
 			@RequestParam("tradeIds") Long[] tradeIds, 
 			@RequestParam(value="expressCompany", defaultValue="-1") String expressCompany,
@@ -189,7 +190,11 @@ public class AdminTradeController {
 		for (Long tradeId : tradeIds) {
 			auditOneTrade(tradeId, expressCompany);
 		}
-		return "empty";
+//		for (Long id : tradeIds) {
+//			System.out.print(id + ",");
+//		}
+//		System.out.println();
+		return "/admin/success";
 	}
 	
 	

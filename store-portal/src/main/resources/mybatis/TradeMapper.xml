@@ -106,7 +106,7 @@
 			receiver_state AS "receiverState"
 		FROM sc_trade a  
 			LEFT JOIN sc_user b ON b.id = a.user_id 
-		WHERE a.status='TRADE_WAIT_CENTRO_AUDIT' limit 200
+		WHERE a.status='TRADE_WAIT_CENTRO_AUDIT' limit 500
 	</select>
 	
 	<select id="findWaitAuditTradesBy" parameterType="map" resultType="Trade">
@@ -120,7 +120,7 @@
 			has_buyer_message AS "hasBuyerMessage" , buyer_message as "buyerMessage", buyer_memo as "buyerMemo", seller_memo as "sellerMemo",
 			receiver_zip AS "receiverZip" ,lg_aging AS "lgAging" ,user_id AS "user.id" ,buyer_alipay_no AS "buyerAlipayNo" ,
 			receiver_state AS "receiverState", 
-			CONCAT(d.title) as "itemTitles"
+			GROUP_CONCAT(d.title, "|") as "itemTitles"
 		FROM sc_trade a  
 			LEFT JOIN sc_user b ON b.id = a.user_id 
 			LEFT JOIN sc_trade_order c on c.trade_id = a.id 
@@ -138,7 +138,8 @@
 		<if test="itemTitle != null">  
            and d.title like #{itemTitle}  
         </if>        
-		limit 200
+        group by a.id
+		limit 500
 	</select>
 	
 	<select id="findWaitAuditCitys" resultType="map">

@@ -14,7 +14,7 @@
 <thead><tr class="always_top">
 	<th>商家</th>
 	<th>已发送运单 （合计${total}单）</th>
-	<th>已售出商品合计 （合计${totalItmes}件）</th>
+	<th>已售出商品 （合计${totalItmes}件）</th>
 	</tr></thead>
 	<tbody>
 		<c:forEach items="${results}" var="val">

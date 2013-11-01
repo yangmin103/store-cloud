@@ -78,6 +78,16 @@ body,button,input,select,textarea{font:12px/1.5 tahoma,arial,\5b8b\4f53}
 	border-top: 2px solid #658A16;
 }
 
+/* 提示 */
+.hint {
+     width: 200px;
+     /*bottom:0;*/
+     padding: 10px;
+     left: 40%;
+     top: 40%;
+     position: fixed;
+}
+
 #footer a {color: #999;}
 
 #always_top { width:792px; display:block;height:72px; background-color:#FFFFFF}
