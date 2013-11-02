@@ -16,6 +16,9 @@
 	});
 	
 	$(document).ready(function() {
+	
+		$('#loadingDiv').hide();
+		
 		// 全选事件
 	   	$("#selectAll").live('click',function() {
 	   		if($(this).attr("checked") == "checked") {
@@ -142,8 +145,8 @@
 	    	<a href="javascript:postSelected();" class="btn btn-primary">审核通过</a>
 	  	</div>
 	</div>
-	
-	<div id="loadingDiv" class="hint">
+	 
+	<div id="loadingDiv" class="hint hide">
 		<img src = "${ctx}/static/images/fetch.gif">
 	</div>
 	
