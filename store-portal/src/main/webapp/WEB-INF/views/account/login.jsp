@@ -29,6 +29,8 @@
 	<%
 	}
 	%>
+	please Login from taobao
+		<!-- 
 		<div class="control-group">
 			<label for="username" class="control-label">名称:</label>
 			<div class="controls">
@@ -49,6 +51,7 @@
 			 	<span class="help-block">(管理员: <b>admin/admin</b>, 普通用户: <b>user/user</b>)</span>
 			</div>
 		</div>
+		 -->
 	</form>
 </body>
 </html>
