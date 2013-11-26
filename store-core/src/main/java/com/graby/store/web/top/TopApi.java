@@ -89,9 +89,11 @@ public class TopApi {
 
 	// ----------------- 默认开发环境 ----------------- //
 
+	//1021395257
 	@Value("${top.appkey}")
 	private String appKey = "1021395257";
 
+	//sandbox0475ca7f0a4a47a3d5303014e
 	@Value("${top.appSecret}")
 	private String appSecret = "sandbox0475ca7f0a4a47a3d5303014e";
 
@@ -535,9 +537,10 @@ public class TopApi {
 //		return trades;
 //	}
 	
-	public static void main(String[] args) {
-		String s = "12134";
-		System.out.println(s.split(",")[0]);
+	public static void main(String[] args) throws ApiException {
+		TopApi top = new TopApi();
+		top.init();
+		top.getShop("shijunchao520");
 		
 	}
 
