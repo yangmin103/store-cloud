@@ -16,6 +16,7 @@
 <link href="${ctx}/static/bootstrap/2.2.2/css/bootstrap.css" type="text/css" rel="stylesheet" />
 <link href="${ctx}/static/styles/default.css" type="text/css" rel="stylesheet" />
 <script src="${ctx}/static/jquery/jquery-1.8.3.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="http://a.tbcdn.cn/apps/isvportal/securesdk/securesdk.js" id="J_secure_sdk_script" data-appkey="21397471"></script>
 <sitemesh:head />
 
 </head>
