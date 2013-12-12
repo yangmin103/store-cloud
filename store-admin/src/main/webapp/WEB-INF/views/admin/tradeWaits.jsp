@@ -65,7 +65,7 @@
 				 	${trade.receiverAddress}
 				</td>
 				<td class="span2">
-					<a href="${ctx}/trade/audit/${trade.id}" class="btn btn-primary">开始审核</a></td>
+					<a href="${ctx}/trade/audit/${trade.id}" class="btn btn-primary">进入</a></td>
 				</td>
 			</tr>
 			</c:if>

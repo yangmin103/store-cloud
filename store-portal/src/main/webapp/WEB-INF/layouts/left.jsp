@@ -23,9 +23,7 @@
 		<a href="${ctx}/trade/received">仓库已接收</a>
 		<a href="${ctx}/trade/search">订单查询</a>
 		<a href="${ctx}/trade/notifys">通知用户签收</a>
-		<!--
 		<a href="${ctx}/trade/traces">物流信息追踪</a>
-		-->
 	</div>
 	<h1>统计查询</h1>
 	<div class="submenu">

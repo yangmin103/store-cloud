@@ -17,7 +17,7 @@ public class TradeRemoteImpl implements TradeRemote {
 
 	@Autowired
 	private TradeService tradeService;
-	
+
 	@Override
 	public Long getRelatedTradeId(Long tid) {
 		return tradeService.getRelatedTradeId(tid);
@@ -42,12 +42,12 @@ public class TradeRemoteImpl implements TradeRemote {
 	public void createAllSendShipOrder(Long centroId) {
 		tradeService.createAllSendShipOrder(centroId);
 	}
-	
+
 	@Override
 	public List<Trade> findWaitAuditTrades() {
 		return tradeService.findWaitAuditTrades();
 	}
-	
+
 	@Override
 	public List<Trade> findWaitAuditTradesBy(Map<String, Object> params) {
 		return tradeService.findWaitAuditTradesBy(params);
@@ -62,7 +62,7 @@ public class TradeRemoteImpl implements TradeRemote {
 	public Trade getTrade(Long id) {
 		return tradeService.getTrade(id);
 	}
-	
+
 	@Override
 	public Page<Trade> findUnfinishedTrades(int pageNo, int pageSize) {
 		return tradeService.findUnfinishedTrades(pageNo, pageSize);
@@ -70,7 +70,7 @@ public class TradeRemoteImpl implements TradeRemote {
 
 	@Override
 	public void deleteTrade(Long tradeId) {
-		tradeService.deleteTrade(tradeId);		
+		tradeService.deleteTrade(tradeId);
 	}
 
 	@Override
@@ -78,4 +78,18 @@ public class TradeRemoteImpl implements TradeRemote {
 		return tradeService.findWaitAuditCitys();
 	}
 
+	@Override
+	public void splitTrade(Long tradeId, Long orderId) {
+		tradeService.splitTrade(tradeId, orderId);
+	}
+
+	@Override
+	public void mergeTrade(Long[] tradeIds) {
+		tradeService.mergeTrade(tradeIds);
+	}
+
+	@Override
+	public List<Trade> findSplitedTrades() {
+		return tradeService.findSplitedTrades();
+	}
 }

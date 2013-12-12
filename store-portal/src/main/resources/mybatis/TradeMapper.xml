@@ -9,6 +9,8 @@
 		FROM sc_trade	where id=#{0} for update
 	</select>
 	
+	<!-- ============= 结果集定义 start ============= -->
+	
 	<resultMap id="TradeEntity" type="Trade">
 		<result property="id" column="id"/>
 		<result property="tradeFrom" column="trade_from"/>
@@ -42,24 +44,18 @@
 	
 	<select id="fetchTradeOrders" parameterType="long" resultType="TradeOrder">
 		SELECT
-		  id,
-		  adjust_fee as "adjustFee",
-		  buyer_nick as "buyerNick",
-		  discount_fee as "discountFee",
-		  num,
-		  num_iid as "numIid",
-		  order_from as "orderFrom",
-		  pic_path as "picPath",
-		  sku_id as "skuId",
+		  id,adjust_fee as "adjustFee",buyer_nick as "buyerNick",
+		  discount_fee as "discountFee",num,num_iid as "numIid",
+		  order_from as "orderFrom",pic_path as "picPath",sku_id as "skuId",
 		  sku_properties_name as "skuPropertiesName",
 		  timeout_action_time as "timeoutActionTime",
-		  title,
-		  total_fee as "totalFee",
-		  item_id as "item.id",
-		  trade_id as "tradeId"
+		  title,total_fee as "totalFee",
+		  item_id as "item.id",trade_id as "tradeId"
 		FROM sc_trade_order where trade_id=#{id}
 	</select>
-	
+
+
+	<!-- ============= 结果集定义 END ============= -->
 	
 	<!-- 关联淘宝交易ID和系统交易ID -->
 	<insert id="createTradeMapping" useGeneratedKeys="true" keyColumn="id">
@@ -119,7 +115,7 @@
 			centro_id AS "centro.id" ,lg_aging_type AS "lgAgingType" ,
 			has_buyer_message AS "hasBuyerMessage" , buyer_message as "buyerMessage", buyer_memo as "buyerMemo", seller_memo as "sellerMemo",
 			receiver_zip AS "receiverZip" ,lg_aging AS "lgAging" ,user_id AS "user.id" ,buyer_alipay_no AS "buyerAlipayNo" ,
-			receiver_state AS "receiverState", 
+			receiver_state AS "receiverState", merge_hash as "mergeHash",
 			GROUP_CONCAT(d.title, "|") as "itemTitles"
 		FROM sc_trade a  
 			LEFT JOIN sc_user b ON b.id = a.user_id 
@@ -135,12 +131,37 @@
 		<if test="receiverCity != null">  
            and a.receiver_city= #{receiverCity}  
         </if>
-		<if test="itemTitle != null">  
+        <if test="itemTitle != null">  
            and d.title like #{itemTitle}  
+        </if>
+        <if test="hash != null">  
+           and a.merge_hash=#{hash}  
         </if>        
         group by a.id
 		limit 500
 	</select>
+
+	<!-- 查询被拆分的订单 -->
+	<select id="findSplitedTrades"  resultType="map">
+		SELECT 
+			a.id AS "id" , b.shop_name AS "user.shopName", 
+			buyer_area AS "buyerArea" ,buyer_memo AS "buyerMemo" ,receiver_address AS "receiverAddress" ,pay_time AS "payTime" ,
+			trade_from AS "tradeFrom" ,a.buyer_nick AS "buyerNick" ,receiver_name AS "receiverName" ,
+			receiver_phone AS "receiverPhone" ,shipping_type AS "shippingType" ,receiver_district AS "receiverDistrict" ,STATUS AS "status" ,
+			receiver_mobile AS "receiverMobile" ,buyer_email AS "buyerEmail" ,receiver_city AS "receiverCity" ,
+			has_buyer_message AS "hasBuyerMessage" ,centro_id AS "centro.id" ,lg_aging_type AS "lgAgingType" ,
+			receiver_zip AS "receiverZip" ,lg_aging AS "lgAging" ,user_id AS "user.id" ,buyer_alipay_no AS "buyerAlipayNo" ,
+			receiver_state AS "receiverState", merge_hash as "mergeHash",
+			GROUP_CONCAT(d.title, "|") as "itemTitles"
+		FROM sc_trade a 
+			LEFT JOIN sc_user b ON b.id = a.user_id
+			LEFT JOIN sc_trade_order c on c.trade_id = a.id 
+			LEFT JOIN sc_item d on d.id = c.item_id
+		WHERE `merge_hash` is not null
+		group by a.id
+		ORDER BY a.`trade_from`
+	</select>
+	
 	
 	<select id="findWaitAuditCitys" resultType="map">
 		SELECT 
@@ -158,6 +179,11 @@
 	
 	<update id="updateTradeStatus"> 
         update sc_trade set status=#{1}
+        where id=#{0}
+    </update>
+    
+    <update id="updateTradeMergeHash"> 
+        update sc_trade set merge_hash=#{1}
         where id=#{0}
     </update>    
     
