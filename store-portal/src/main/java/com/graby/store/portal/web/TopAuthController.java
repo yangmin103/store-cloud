@@ -103,6 +103,7 @@ public class TopAuthController {
 		params.put("grant_type", "authorization_code");
 		params.put("redirect_uri", "http://www.wlpost.com/top_oauth");
 		// params.put("redirect_uri", "http://121.196.129.75/top_oauth_get");
+		// dep
 		String json = WebUtils.doPost(tokenUrl, params, 1000, 1000);
 		ObjectMapper mapper = new ObjectMapper();
 		Map<String, String> value = mapper.readValue(json, Map.class);
