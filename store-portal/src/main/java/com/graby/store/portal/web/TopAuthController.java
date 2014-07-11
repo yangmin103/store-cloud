@@ -29,29 +29,30 @@ import com.taobao.api.internal.util.WebUtils;
 @Component
 @RequestMapping(value = "/")
 public class TopAuthController {
-	
+
 	// 测试环境
-	
+
 	@Value("${top.appkey}")
-	private String clientId="21397471";
-	
+	private final String clientId = "21397471";
+
 	@Value("${top.appSecret}")
-	private String clientSecret="e7238e5ec82b6ef65e78ad108c48b42f";
-	
+	private final String clientSecret = "e7238e5ec82b6ef65e78ad108c48b42f";
+
 	@Value("${top.oauth.token}")
-	private String tokenUrl="https://oauth.taobao.com/token";
-	
+	private final String tokenUrl = "https://oauth.taobao.com/token";
+
 	@Autowired
-	private Cache<String,String> userCache;
-	
+	private Cache<String, String> userCache;
+
 	@Autowired
 	private TopApi topApi;
-	
+
 	@Autowired
 	private AuthService userService;
-	
+
 	/**
 	 * 老的方式
+	 * 
 	 * @param request
 	 * @param response
 	 * @param model
@@ -73,19 +74,21 @@ public class TopAuthController {
 		}
 		return "auth/post";
 	}
-	
+
 	/**
 	 * OAuth2方式
+	 * 
 	 * @param request
 	 * @param response
 	 * @param model
 	 * @return
 	 * @throws ApiException
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "top_oauth")
-	public String oauth(HttpServletRequest request, HttpServletResponse response, Model model) throws ApiException, IOException {
+	public String oauth(HttpServletRequest request, HttpServletResponse response, Model model) throws ApiException,
+			IOException {
 		String error = request.getParameter("error");
 		if (StringUtils.isNotBlank(error)) {
 			String error_description = request.getParameter("error_description");
@@ -93,18 +96,18 @@ public class TopAuthController {
 		}
 		String code = request.getParameter("code");
 		model.addAttribute("code", code);
-		Map<String,String> params = new HashMap<String,String>();
+		Map<String, String> params = new HashMap<String, String>();
 		params.put("code", code);
 		params.put("client_id", clientId);
 		params.put("client_secret", clientSecret);
 		params.put("grant_type", "authorization_code");
-		// params.put("redirect_uri", "http://www.wlpost.com/top_oauth_get");
-		params.put("redirect_uri", "http://121.196.129.75/top_oauth_get");
+		params.put("redirect_uri", "http://www.wlpost.com/top_oauth");
+		// params.put("redirect_uri", "http://121.196.129.75/top_oauth_get");
 		String json = WebUtils.doPost(tokenUrl, params, 1000, 1000);
 		ObjectMapper mapper = new ObjectMapper();
-	    Map<String,String> value = mapper.readValue(json, Map.class);
-	    String sessionKey = value.get("access_token");
-	    String nick = value.get("taobao_user_nick");
+		Map<String, String> value = mapper.readValue(json, Map.class);
+		String sessionKey = value.get("access_token");
+		String nick = value.get("taobao_user_nick");
 		if (sessionKey != null) {
 			Shop shop = topApi.getShop(nick);
 			// 同步淘宝用户, 密码为用户名
@@ -115,6 +118,6 @@ public class TopAuthController {
 			ShiroContextUtils.logout();
 		}
 		return "auth/post";
-	}	
-	
+	}
+
 }
