@@ -30,7 +30,7 @@ import com.taobao.api.internal.util.WebUtils;
 @RequestMapping(value = "/")
 public class TopAuthController {
 
-	// 测试环境
+	// ONLINE
 
 	@Value("${top.appkey}")
 	private final String clientId = "21812303";
