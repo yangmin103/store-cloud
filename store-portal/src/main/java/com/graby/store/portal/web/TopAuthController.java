@@ -30,13 +30,14 @@ import com.taobao.api.internal.util.WebUtils;
 @RequestMapping(value = "/")
 public class TopAuthController {
 
-	// ONLINE
+	// ONLINE 21812303 , 69804a6435b20fcc2b863c1126e473e5
+	// Sandbox 1021812303, sandbox435b20fcc2b863c1126e473e5
 
 	@Value("${top.appkey}")
-	private final String clientId = "21812303";
+	private final String clientId = "1021812303";
 
 	@Value("${top.appSecret}")
-	private final String clientSecret = "69804a6435b20fcc2b863c1126e473e5";
+	private final String clientSecret = "sandbox435b20fcc2b863c1126e473e5";
 
 	@Value("${top.oauth.token}")
 	private final String tokenUrl = "https://oauth.taobao.com/token";
