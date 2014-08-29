@@ -34,10 +34,10 @@ public class TopAuthController {
 	// Sandbox 1021812303, sandbox435b20fcc2b863c1126e473e5
 
 	@Value("${top.appkey}")
-	private final String clientId = "21812303";
+	private final String clientId = "23012748";
 
 	@Value("${top.appSecret}")
-	private final String clientSecret = "69804a6435b20fcc2b863c1126e473e5";
+	private final String clientSecret = "1ef1ff93070d9be52f3bdd05adc10a02";
 
 	@Value("${top.oauth.token}")
 	private final String tokenUrl = "https://oauth.taobao.com/token";
