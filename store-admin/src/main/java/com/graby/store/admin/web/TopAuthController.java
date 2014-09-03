@@ -81,15 +81,6 @@ public class TopAuthController {
 		model.addAttribute("username", nick);
 		model.addAttribute("password", EncryptUtil.md5(nick));
 		ShiroContextUtils.logout();
-		// if (sessionKey != null) {
-		// Shop shop = topApi.getShop(nick);
-		// // 同步淘宝用户, 密码为用户名
-		// userService.addUserIfNecessary(nick, shop.getTitle());
-		// userCache.put(nick, sessionKey);
-		// model.addAttribute("username", nick);
-		// model.addAttribute("password", EncryptUtil.md5(nick));
-		// ShiroContextUtils.logout();
-		// }
 		return "auth/post";
 	}
 
