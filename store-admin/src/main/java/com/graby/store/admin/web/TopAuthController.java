@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graby.store.cache.Cache;
 import com.graby.store.util.EncryptUtil;
+import com.graby.store.web.auth.ShiroContextUtils;
 import com.taobao.api.ApiException;
 import com.taobao.api.internal.util.WebUtils;
 
@@ -79,7 +80,7 @@ public class TopAuthController {
 		String nick = value.get("taobao_user_nick");
 		model.addAttribute("username", nick);
 		model.addAttribute("password", EncryptUtil.md5(nick));
-
+		ShiroContextUtils.logout();
 		// if (sessionKey != null) {
 		// Shop shop = topApi.getShop(nick);
 		// // 同步淘宝用户, 密码为用户名
