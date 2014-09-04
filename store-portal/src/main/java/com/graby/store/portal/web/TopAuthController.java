@@ -1,6 +1,7 @@
 package com.graby.store.portal.web;
 
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -108,7 +109,7 @@ public class TopAuthController {
 		ObjectMapper mapper = new ObjectMapper();
 		Map<String, String> value = mapper.readValue(json, Map.class);
 		String sessionKey = value.get("access_token");
-		String nick = value.get("taobao_user_nick");
+		String nick = URLDecoder.decode(value.get("taobao_user_nick"), "UTF-8");
 		if (sessionKey != null) {
 			Shop shop = topApi.getShop(nick);
 			// 同步淘宝用户, 密码为用户名
