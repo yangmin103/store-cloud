@@ -110,10 +110,14 @@ public class TopAuthController {
 		Map<String, String> value = mapper.readValue(json, Map.class);
 		String sessionKey = value.get("access_token");
 		String nick = URLDecoder.decode(value.get("taobao_user_nick"), "UTF-8");
-		if (sessionKey != null) {
-			Shop shop = topApi.getShop(nick);
-			// 同步淘宝用户, 密码为用户名
-			userService.addUserIfNecessary(nick, shop.getTitle());
+		if (nick.equals("商家测试帐号17")) {
+			// 过滤
+			model.addAttribute("username", nick);
+			model.addAttribute("password", EncryptUtil.md5(nick));
+		} else if (sessionKey != null) {
+			// Shop shop = topApi.getShop(nick);
+			// // 同步淘宝用户, 密码为用户名
+			// userService.addUserIfNecessary(nick, shop.getTitle());
 			userCache.put(nick, sessionKey);
 			model.addAttribute("username", nick);
 			model.addAttribute("password", EncryptUtil.md5(nick));

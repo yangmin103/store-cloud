@@ -89,16 +89,16 @@ public class TopApi {
 
 	// ----------------- 默认开发环境 ----------------- //
 
-	//1021395257
+	// 1021395257
 	@Value("${top.appkey}")
-	private String appKey = "1021395257";
+	private String appKey = "23018428";
 
-	//sandbox0475ca7f0a4a47a3d5303014e
+	// sandbox0475ca7f0a4a47a3d5303014e
 	@Value("${top.appSecret}")
-	private String appSecret = "sandbox0475ca7f0a4a47a3d5303014e";
+	private String appSecret = "f2e7f709ff1a05f6e09745612a048a61";
 
 	@Value("${top.serverUrl}")
-	private String serverUrl = "http://gw.api.tbsandbox.com/router/rest";
+	private String serverUrl = "http://gw.api.taobao.com/router/rest";
 
 	private DefaultTaobaoClient client;
 
@@ -116,7 +116,7 @@ public class TopApi {
 	 * 交易类型
 	 */
 	private static final String TRADE_TYPE = "ec,fixed,auction,auto_delivery,cod,independent_shop_trade,independent_simple_trade,shopex_trade,netcn_trade,external_trade,hotel_trade,fenxiao,game_equipment,instant_trade,b2c_cod,super_market_trade,super_market_cod_trade,alipay_movie,taohua,waimai,nopaid";
-	
+
 	/**
 	 * 交易字段（普通）
 	 */
@@ -293,7 +293,7 @@ public class TopApi {
 		ItemSkuGetResponse resp = client.execute(req);
 		return resp.getSku();
 	}
-	
+
 	/**
 	 * 获取交易订单(普通数据，用于大批量活动导入)
 	 * 
@@ -332,7 +332,6 @@ public class TopApi {
 		}
 		return tids;
 	}
-	
 
 	/**
 	 * 获取交易订单(普通数据，用于大批量活动导入)
@@ -370,7 +369,7 @@ public class TopApi {
 		}
 		return trades;
 	}
-	
+
 	/**
 	 * 获取交易详细信息
 	 * 
@@ -386,7 +385,7 @@ public class TopApi {
 		throwIfError(resp);
 		return resp.getTrade();
 	}
-	
+
 	/**
 	 * 获取交易详细信息
 	 * 
@@ -448,8 +447,8 @@ public class TopApi {
 		trace.setTraceList(resp.getTraceList());
 		return trace;
 	}
-	
-	private  LogisticsTraceSearchResponse getTraceSearchResponse(Long tid) throws ApiException {
+
+	private LogisticsTraceSearchResponse getTraceSearchResponse(Long tid) throws ApiException {
 		LogisticsTraceSearchRequest req = new LogisticsTraceSearchRequest();
 		req.setTid(tid);
 		req.setSellerNick(ShiroContextUtils.getNickname());
@@ -457,25 +456,26 @@ public class TopApi {
 		throwIfError(resp);
 		return resp;
 	}
-	
+
 	/**
 	 * 查询退款列表
-	 * @param start TODO
-	 * @param end TODO
+	 * 
+	 * @param start
+	 *            TODO
+	 * @param end
+	 *            TODO
 	 * @return
 	 * @throws ApiException
 	 */
 	public List<Refund> getRefunds(Date start, Date end) throws ApiException {
-		RefundsReceiveGetRequest req=new RefundsReceiveGetRequest();
+		RefundsReceiveGetRequest req = new RefundsReceiveGetRequest();
 		req.setFields("refund_id, tid, title, buyer_nick, seller_nick, total_fee, status, created, refund_fee, oid, good_status, company_name, sid, payment, reason, desc, has_good_return, modified, order_status");
 		req.setStartModified(start);
 		req.setEndModified(end);
-		RefundsReceiveGetResponse resp = client.execute(req , sessionKey());
+		RefundsReceiveGetResponse resp = client.execute(req, sessionKey());
 		throwIfError(resp);
 		return resp.getRefunds();
 	}
-
-	
 
 	private String sessionKey() {
 		return ShiroContextUtils.getSessionKey();
@@ -498,50 +498,53 @@ public class TopApi {
 			throw new ServiceException(resp.getMsg() + resp.getSubMsg());
 		}
 	}
-//	/**
-//	 * 增量获取交易数据(详细数据)
-//	 * 
-//	 * @param status
-//	 * @param start
-//	 * @param end
-//	 * @throws Exception
-//	 */
-//	public List<Trade> getFullTrades(String status, Date start, Date end) throws Exception {
-//		TradesSoldIncrementGetRequest req = new TradesSoldIncrementGetRequest();
-//		req.setFields("tid");
-//		req.setType(TRADE_TYPE);
-//		if (StringUtils.isNotBlank(status)) {
-//			req.setStatus(status);
-//		}
-//		req.setStartModified(start);
-//		req.setEndModified(end);
-//		req.setPageSize(50L);
-//		req.setUseHasNext(false);
-//		TradesSoldIncrementGetResponse rsp = client.execute(req, sessionKey());
-//		List<Trade> trades = new ArrayList<Trade>();
-//		if (rsp.isSuccess()) {
-//			long pageCount = (rsp.getTotalResults() + req.getPageSize() - 1) / req.getPageSize();
-//			while (pageCount > 0) {
-//				req.setPageNo(pageCount);
-//				req.setUseHasNext(true); // 终止统计
-//				rsp = client.execute(req, sessionKey());
-//				if (rsp.isSuccess()) {
-//					for (Trade t : rsp.getTrades()) {
-//						Trade trade = getFullinfoTrade(t.getTid());
-//						trades.add(trade);
-//					}
-//					pageCount--;
-//				}
-//			}
-//		}
-//		return trades;
-//	}
-	
+
+	// /**
+	// * 增量获取交易数据(详细数据)
+	// *
+	// * @param status
+	// * @param start
+	// * @param end
+	// * @throws Exception
+	// */
+	// public List<Trade> getFullTrades(String status, Date start, Date end)
+	// throws Exception {
+	// TradesSoldIncrementGetRequest req = new TradesSoldIncrementGetRequest();
+	// req.setFields("tid");
+	// req.setType(TRADE_TYPE);
+	// if (StringUtils.isNotBlank(status)) {
+	// req.setStatus(status);
+	// }
+	// req.setStartModified(start);
+	// req.setEndModified(end);
+	// req.setPageSize(50L);
+	// req.setUseHasNext(false);
+	// TradesSoldIncrementGetResponse rsp = client.execute(req, sessionKey());
+	// List<Trade> trades = new ArrayList<Trade>();
+	// if (rsp.isSuccess()) {
+	// long pageCount = (rsp.getTotalResults() + req.getPageSize() - 1) /
+	// req.getPageSize();
+	// while (pageCount > 0) {
+	// req.setPageNo(pageCount);
+	// req.setUseHasNext(true); // 终止统计
+	// rsp = client.execute(req, sessionKey());
+	// if (rsp.isSuccess()) {
+	// for (Trade t : rsp.getTrades()) {
+	// Trade trade = getFullinfoTrade(t.getTid());
+	// trades.add(trade);
+	// }
+	// pageCount--;
+	// }
+	// }
+	// }
+	// return trades;
+	// }
+
 	public static void main(String[] args) throws ApiException {
 		TopApi top = new TopApi();
 		top.init();
 		top.getShop("shijunchao520");
-		
+
 	}
 
 }
