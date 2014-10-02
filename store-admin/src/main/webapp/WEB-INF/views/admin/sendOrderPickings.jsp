@@ -128,8 +128,8 @@
 		<th>创建日期</th>
 		<th>商铺名称</th>
 		<th>出库单号</th>
-		<th>运输公司</th>
-		<th>运单号</th>
+		<th>运输公司/运单号</th>
+		<th>收件人信息</th>
 		<th>商品</th>
 		<th>状态</th>
 		<th><input type="checkbox" id="checkAll" name="checkAll"/> 全选</th>
@@ -140,8 +140,9 @@
 				<td><fmt:formatDate value="${order.createDate}" type="date" pattern="yyyy-MM-dd HH:mm"/></td>
 				<td>${order.createUser.shopName}</td>
 				<td>${order.orderno}</td>
-				<td>${order.expressCompany}</td>
-				<td>${order.expressOrderno}</td>
+				<td>${order.expressCompany}/${order.expressOrderno}</td>
+				<td>${order.receiverName}
+				</td>
 				<td>
 					<c:forEach items="${order.details}" var="detail">
 						${detail.item.code} ${detail.item.title} ${detail.num} <BR>
