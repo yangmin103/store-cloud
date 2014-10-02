@@ -16,7 +16,9 @@
             
           </ul>          
           <ul class="nav pull-right">
+          	<!-- 
           	<a target="_blank" href="http://www.taobao.com/webww/ww.php?ver=3&touid=tang7987&siteid=cntaobao&status=1&charset=utf-8" ><img border="0" src="http://amos.alicdn.com/online.aw?v=2&uid=tang7987&site=cntaobao&s=1&charset=utf-8" alt="点击这里给我发消息" /></a>
+          	 -->
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">功能 <b class="caret"></b></a>
               <ul class="dropdown-menu">
