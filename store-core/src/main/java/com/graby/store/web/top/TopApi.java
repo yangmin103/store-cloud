@@ -188,7 +188,7 @@ public class TopApi {
 
 		// 需要分页
 		List<Item> results = new ArrayList<Item>(items.size());
-		Pagination<Item> page = new Pagination<Item>(20);
+		Pagination<Item> page = new Pagination<Item>(10);
 		page.setTotalCount(items.size());
 		String numIids;
 		int cur = page.getFirst();
