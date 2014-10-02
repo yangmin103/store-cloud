@@ -145,7 +145,7 @@
 				</td>
 				<td>
 					<c:forEach items="${order.details}" var="detail">
-						${detail.item.code} ${detail.item.title} ${detail.num} <BR>
+						${detail.item.code} ${detail.item.title} (${detail.num}) <BR>
 					</c:forEach>
 				</td>
 				<td>运单已打印,等待拣货.</td>
