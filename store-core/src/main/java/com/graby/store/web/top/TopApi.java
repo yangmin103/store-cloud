@@ -177,41 +177,46 @@ public class TopApi {
 		if (CollectionUtils.isNotEmpty(inventoryItems)) {
 			items.addAll(inventoryItems);
 		}
-		StringBuffer line = new StringBuffer();
-		if (items.size() < 20) {
-			for (int i = 0; i < items.size(); i++) {
-				line.append(items.get(i).getNumIid());
-				line.append(i < (items.size() - 1) ? "," : "");
-			}
-			return getItems(line.toString());
+		List<Item> results = new ArrayList<Item>();
+		for (int i = 0; i < items.size(); i++) {
+			results.add(getItem(items.get(i).getNumIid()));
 		}
-
-		// 需要分页
-		List<Item> results = new ArrayList<Item>(items.size());
-		Pagination<Item> page = new Pagination<Item>(20);
-		page.setTotalCount(items.size());
-		String numIids;
-		int cur = page.getFirst();
-		do {
-			page.setPageNo(cur);
-			int start = page.getPageSize() * (page.getPageNo() - 1);
-			long end = page.isHasNext() ? page.getPageSize() * page.getPageNo() : page.getTotalCount();
-			for (int i = start; i < end; i++) {
-				line.append(items.get(i).getNumIid());
-				line.append(i < (end - 1) ? "," : "");
-			}
-			numIids = line.toString();
-			results.addAll(getItems(numIids));
-			line = new StringBuffer();
-			cur++;
-			try {
-				// 每隔1秒后调用，减少调用频率
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		} while (page.isHasNext());
 		return results;
+//		StringBuffer line = new StringBuffer();
+//		if (items.size() < 20) {
+//			for (int i = 0; i < items.size(); i++) {
+//				line.append(items.get(i).getNumIid());
+//				line.append(i < (items.size() - 1) ? "," : "");
+//			}
+//			return getItems(line.toString());
+//		}
+//
+//		// 需要分页
+//		List<Item> results = new ArrayList<Item>(items.size());
+//		Pagination<Item> page = new Pagination<Item>(20);
+//		page.setTotalCount(items.size());
+//		String numIids;
+//		int cur = page.getFirst();
+//		do {
+//			page.setPageNo(cur);
+//			int start = page.getPageSize() * (page.getPageNo() - 1);
+//			long end = page.isHasNext() ? page.getPageSize() * page.getPageNo() : page.getTotalCount();
+//			for (int i = start; i < end; i++) {
+//				line.append(items.get(i).getNumIid());
+//				line.append(i < (end - 1) ? "," : "");
+//			}
+//			numIids = line.toString();
+//			results.addAll(getItems(numIids));
+//			line = new StringBuffer();
+//			cur++;
+//			try {
+//				// 每隔1秒后调用，减少调用频率
+//				Thread.sleep(1000);
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			}
+//		} while (page.isHasNext());
+//		return results;
 	}
 
 	/**

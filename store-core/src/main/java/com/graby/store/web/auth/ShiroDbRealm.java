@@ -44,8 +44,8 @@ import com.graby.store.util.Encodes;
 public class ShiroDbRealm extends AuthorizingRealm {
 
 	@Autowired
-	private Cache<String,String> cache;
-	
+	private Cache<String, String> cache;
+
 	@Autowired
 	protected AuthService authService;
 
@@ -59,9 +59,8 @@ public class ShiroDbRealm extends AuthorizingRealm {
 		if (user != null) {
 			byte[] salt = Encodes.decodeHex(user.getSalt());
 			String sessionKey = cache.get(user.getUsername());
-			return new SimpleAuthenticationInfo(
-					new ShiroUser(user.getId(), user.getUsername(), sessionKey, user.getShopName()), 
-					user.getPassword(),	ByteSource.Util.bytes(salt), getName());
+			return new SimpleAuthenticationInfo(new ShiroUser(user.getId(), user.getUsername(), sessionKey,
+					user.getShopName()), user.getPassword(), ByteSource.Util.bytes(salt), getName());
 		} else {
 			return null;
 		}
@@ -101,11 +100,11 @@ public class ShiroDbRealm extends AuthorizingRealm {
 
 		private static final long serialVersionUID = -1373760761780840081L;
 
-		private Long userid;
+		private final Long userid;
 		private String username;
-		private String session;
-		private String shopname;
-		
+		private final String session;
+		private final String shopname;
+
 		public ShiroUser(Long userid, String username, String session, String shopname) {
 			this.userid = userid;
 			this.username = username;
