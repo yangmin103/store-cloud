@@ -11,7 +11,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.graby.store.base.Pagination;
 import com.graby.store.base.ServiceException;
 import com.graby.store.web.auth.ShiroContextUtils;
 import com.taobao.api.ApiException;
@@ -24,6 +23,7 @@ import com.taobao.api.domain.Sku;
 import com.taobao.api.domain.Trade;
 import com.taobao.api.request.ItemGetRequest;
 import com.taobao.api.request.ItemSkuGetRequest;
+import com.taobao.api.request.ItemSkusGetRequest;
 import com.taobao.api.request.ItemsInventoryGetRequest;
 import com.taobao.api.request.ItemsListGetRequest;
 import com.taobao.api.request.ItemsOnsaleGetRequest;
@@ -36,6 +36,7 @@ import com.taobao.api.request.TradesSoldIncrementGetRequest;
 import com.taobao.api.request.UserSellerGetRequest;
 import com.taobao.api.response.ItemGetResponse;
 import com.taobao.api.response.ItemSkuGetResponse;
+import com.taobao.api.response.ItemSkusGetResponse;
 import com.taobao.api.response.ItemsInventoryGetResponse;
 import com.taobao.api.response.ItemsListGetResponse;
 import com.taobao.api.response.ItemsOnsaleGetResponse;
@@ -177,35 +178,41 @@ public class TopApi {
 		if (CollectionUtils.isNotEmpty(inventoryItems)) {
 			items.addAll(inventoryItems);
 		}
-		StringBuffer line = new StringBuffer();
-		if (items.size() < 20) {
-			for (int i = 0; i < items.size(); i++) {
-				line.append(items.get(i).getNumIid());
-				line.append(i < (items.size() - 1) ? "," : "");
-			}
-			return getItems(line.toString());
-		}
-
-		// 需要分页
-		List<Item> results = new ArrayList<Item>(items.size());
-		Pagination<Item> page = new Pagination<Item>(10);
-		page.setTotalCount(items.size());
-		String numIids;
-		int cur = page.getFirst();
-		do {
-			page.setPageNo(cur);
-			int start = page.getPageSize() * (page.getPageNo() - 1);
-			long end = page.isHasNext() ? page.getPageSize() * page.getPageNo() : page.getTotalCount();
-			for (int i = start; i < end; i++) {
-				line.append(items.get(i).getNumIid());
-				line.append(i < (end - 1) ? "," : "");
-			}
-			numIids = line.toString();
-			results.addAll(getItems(numIids));
-			line = new StringBuffer();
-			cur++;
-		} while (page.isHasNext());
-		return results;
+		return fillItemSkus(items);
+//		List<Item> results = new ArrayList<Item>(items.size());
+//		for (int i = 0; i < items.size(); i++) {
+//			Item item = getItem(items.get(i).getNumIid());
+//			results.add(fillItemSkusitem);
+//		}
+//		StringBuffer line = new StringBuffer();
+//		if (items.size() < 20) {
+//			for (int i = 0; i < items.size(); i++) {
+//				line.append(items.get(i).getNumIid());
+//				line.append(i < (items.size() - 1) ? "," : "");
+//			}
+//			return getItems(line.toString());
+//		}
+//
+//		// 需要分页
+//		List<Item> results = new ArrayList<Item>(items.size());
+//		Pagination<Item> page = new Pagination<Item>(10);
+//		page.setTotalCount(items.size());
+//		String numIids;
+//		int cur = page.getFirst();
+//		do {
+//			page.setPageNo(cur);
+//			int start = page.getPageSize() * (page.getPageNo() - 1);
+//			long end = page.isHasNext() ? page.getPageSize() * page.getPageNo() : page.getTotalCount();
+//			for (int i = start; i < end; i++) {
+//				line.append(items.get(i).getNumIid());
+//				line.append(i < (end - 1) ? "," : "");
+//			}
+//			numIids = line.toString();
+//			results.addAll(getItems(numIids));
+//			line = new StringBuffer();
+//			cur++;
+//		} while (page.isHasNext());
+//		return results;
 	}
 
 	/**
@@ -219,7 +226,7 @@ public class TopApi {
 	 */
 	private List<Item> getOnsaleItems(String q, long pageNo, long pageSize) throws ApiException {
 		ItemsOnsaleGetRequest req = new ItemsOnsaleGetRequest();
-		req.setFields("num_iid");
+		req.setFields(ITEM_FIELDS);
 		req.setQ(q);
 		req.setPageNo(pageNo);
 		req.setPageSize(pageSize);
@@ -233,7 +240,7 @@ public class TopApi {
 	 */
 	private List<Item> getInventoryItems(String q, long pageNo, long pageSize) throws ApiException {
 		ItemsInventoryGetRequest req = new ItemsInventoryGetRequest();
-		req.setFields("num_iid");
+		req.setFields(ITEM_FIELDS);
 		req.setQ(q);
 		req.setPageNo(pageNo);
 		req.setPageSize(pageSize);
@@ -276,7 +283,24 @@ public class TopApi {
 		throwIfError(resp);
 		return resp.getItems();
 	}
+	
+	public List<Item> fillItemSkus(List<Item> items) throws ApiException {
+		for (Item item : items) {
+			item.setSkus(getItemSkus(""+item.getNumIid()));
+		}
+		return items;
+	}
 
+	public List<Sku> getItemSkus(String numIids) throws ApiException {
+		ItemSkusGetRequest req=new ItemSkusGetRequest();
+		req.setFields("sku_id,num_iid");
+		req.setNumIids(numIids);
+		ItemSkusGetResponse resp = client.execute(req , sessionKey());
+		throwIfError(resp);
+		return resp.getSkus();
+	}
+	
+	
 	/**
 	 * 获取SKU
 	 * 
