@@ -293,7 +293,7 @@ public class TopApi {
 
 	public List<Sku> getItemSkus(String numIids) throws ApiException {
 		ItemSkusGetRequest req=new ItemSkusGetRequest();
-		req.setFields("sku_id,num_iid");
+		req.setFields("sku_id,num_iid,properties_name,quantity,price,outer_id,created,modified,status");
 		req.setNumIids(numIids);
 		ItemSkusGetResponse resp = client.execute(req , sessionKey());
 		throwIfError(resp);
