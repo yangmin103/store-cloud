@@ -193,9 +193,10 @@ public class TradeService {
 						Item item = itemServie.getItem(itemId);
 						order.setItem(item);
 						// 库存数量
-						if (stockNum <= 0) {
-							useable = false;
-						}
+						// 不做库存限制
+//						if (stockNum <= 0) {
+//							useable = false;
+//						}
 					}
 				}
 				groupResults.put(useable? "useable" : "failed", trade);
