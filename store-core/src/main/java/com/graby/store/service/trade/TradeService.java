@@ -188,8 +188,8 @@ public class TradeService {
 						order.setStockNum(-1);
 						useable = false;
 					} else {
-						long stockNum = inventoryService.getValue(1L, itemId, Accounts.CODE_SALEABLE);
-						order.setStockNum(stockNum);
+//						long stockNum = inventoryService.getValue(1L, itemId, Accounts.CODE_SALEABLE);
+//						order.setStockNum(stockNum);
 						Item item = itemServie.getItem(itemId);
 						order.setItem(item);
 						// 库存数量
