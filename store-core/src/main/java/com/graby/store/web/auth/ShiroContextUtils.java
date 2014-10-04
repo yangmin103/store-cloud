@@ -29,7 +29,7 @@ public class ShiroContextUtils {
 		} catch (Exception e) {
 			return null;
 		}
-	}	
+	}
 	
 	public static Long getUserid() {
 		try {
@@ -37,5 +37,13 @@ public class ShiroContextUtils {
 		} catch (Exception e) {
 			return null;
 		}
+	}
+	
+	public static void setWmsSessionKey(String sessionKey) {
+		SecurityUtils.getSubject().getSession().setAttribute("WMS_SESSION_KEY", sessionKey);
+	}
+	
+	public static String getWmsSessionKey() {
+		return (String)SecurityUtils.getSubject().getSession().getAttribute("WMS_SESSION_KEY");
 	}
 }

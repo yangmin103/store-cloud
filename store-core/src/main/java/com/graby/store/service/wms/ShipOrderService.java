@@ -25,6 +25,7 @@ import com.graby.store.entity.ShipOrder;
 import com.graby.store.entity.ShipOrderDetail;
 import com.graby.store.entity.Trade;
 import com.graby.store.entity.User;
+import com.graby.store.entity.ShipOrder.SendOrderStatus;
 import com.graby.store.service.inventory.AccountEntryArray;
 import com.graby.store.service.inventory.AccountTemplate;
 import com.graby.store.service.inventory.InventoryService;
@@ -32,7 +33,11 @@ import com.graby.store.service.trade.TradeService;
 import com.graby.store.util.Seqence;
 import com.graby.store.web.auth.ShiroContextUtils;
 import com.graby.store.web.top.TopApi;
+import com.graby.store.web.top.TopWmsApi;
 import com.taobao.api.ApiException;
+import com.taobao.api.domain.TradeOrderInfo;
+import com.taobao.api.domain.WaybillAddress;
+import com.taobao.api.domain.WaybillApplyNewInfo;
 
 @Component
 @Transactional(readOnly = true)
@@ -64,6 +69,9 @@ public class ShipOrderService {
 
 	@Autowired
 	private TopApi topApi;
+	
+	@Autowired
+	private TopWmsApi topWmsApi;
 
 	private String formateDate(Date date, String pattern) {
 		SimpleDateFormat format = new SimpleDateFormat(pattern);
@@ -589,5 +597,49 @@ public class ShipOrderService {
 	public void updateShipOrder(ShipOrder order) {
 		orderJpaDao.save(order);
 	}
+	
+	/**
+	 * 创建出库单（电子面单）
+	 * @param tradeId
+	 * @param expressCompany
+	 * @return
+	 * @throws ApiException 
+	 */
+	public ShipOrder createWmsOrder(Long tradeId, String expressCode) throws ApiException {
+		ShipOrder sendOrder = tradeService.createSendShipOrderByTradeId(tradeId);
+		if (!expressCode.equals("-1")) {
+			chooseExpress(sendOrder.getId(), expressCode);
+		}
+		List<WaybillApplyNewInfo> infos = topWmsApi.wayBillGet(expressCode, toWaybillAddress4Receiver(sendOrder), toTradeOrderInfo(sendOrder));
+		return sendOrder;
+	}
+	
+	private static WaybillAddress toWaybillAddress4Receiver(ShipOrder shipOrder) {
+		WaybillAddress address = new WaybillAddress();
+		address.setProvince(shipOrder.getReceiverState()); // 省
+		address.setCity(shipOrder.getReceiverCity()); // 市
+		address.setArea(shipOrder.getReceiverDistrict()); // 区
+		address.setAddressDetail(shipOrder.getReceiverAddressDetail()); // 地址
+		return address;
+	}
+	
+	private static List<TradeOrderInfo>  toTradeOrderInfo(ShipOrder order) {
+		List<TradeOrderInfo> tradeOrderInfos = new ArrayList<TradeOrderInfo>();
+		TradeOrderInfo item = new TradeOrderInfo();
+		item.setConsigneeAddress(toWaybillAddress4Receiver(order));
+		item.setConsigneeName(order.getReceiverName());
+		item.setConsigneePhone(order.getReceiverMobile());
+		item.setItemName("测试");
+		item.setShortAddress("530");
+		List<String> details = new ArrayList<String>();
+		for (ShipOrderDetail detail : order.getDetails()) {
+			details.add(detail.getItemTitle() + detail.getSkuPropertiesName());
+		}
+		item.setTradeOrderList(details);
+		tradeOrderInfos.add(item);
+		return tradeOrderInfos;
+	}
+	
+	
 
 }

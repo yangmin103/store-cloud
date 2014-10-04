@@ -22,6 +22,7 @@ import com.graby.store.service.base.AuthService;
 import com.graby.store.util.EncryptUtil;
 import com.graby.store.web.auth.ShiroContextUtils;
 import com.graby.store.web.top.TopApi;
+import com.graby.store.web.top.WmsSessionCache;
 import com.taobao.api.ApiException;
 import com.taobao.api.domain.Shop;
 import com.taobao.api.internal.util.WebUtils;
@@ -34,14 +35,32 @@ public class TopAuthController {
 	// ONLINE 21812303 , 69804a6435b20fcc2b863c1126e473e5
 	// Sandbox 1021812303, sandbox435b20fcc2b863c1126e473e5
 
+	// * ------TOP BASE APP-------- */
+	
 	@Value("${top.appkey}")
-	private final String clientId = "23018428";
+	private String clientId = "23018428";
 
 	@Value("${top.appSecret}")
-	private final String clientSecret = "f2e7f709ff1a05f6e09745612a048a61";
+	private String clientSecret = "f2e7f709ff1a05f6e09745612a048a61";
+	
+	@Value("${top_wms.redirectUri}")
+	private String redirectUri = "http://127.0.0.1:8080/top_oauth";
+	
+	// * ------WMS APP-------- */
+	
+	@Value("${top_wms.appkey}")
+	private String wmsAppkey = "";
+
+	@Value("${top_wms.appSecret}")
+	private String wmsAppSecret = "";
+	
+	@Value("${top_wms.redirectUri}")
+	private String wmsRedirectUri = "";
+	
+	// * ------COMMON TOKEN URL -------- */
 
 	@Value("${top.oauth.token}")
-	private final String tokenUrl = "https://oauth.taobao.com/token";
+	private String tokenUrl = "https://oauth.taobao.com/token";
 
 	@Autowired
 	private Cache<String, String> userCache;
@@ -103,8 +122,7 @@ public class TopAuthController {
 		params.put("client_id", clientId);
 		params.put("client_secret", clientSecret);
 		params.put("grant_type", "authorization_code");
-		params.put("redirect_uri", "http://www.wlpost.com/top_oauth");
-		// params.put("redirect_uri", "http://121.196.129.75/top_oauth_get");
+		params.put("redirect_uri", redirectUri);
 		String json = WebUtils.doPost(tokenUrl, params, 1000, 1000);
 		ObjectMapper mapper = new ObjectMapper();
 		Map<String, String> value = mapper.readValue(json, Map.class);
@@ -117,7 +135,7 @@ public class TopAuthController {
 		} else if (sessionKey != null) {
 //			Shop shop = topApi.getShop(nick);
 			// 同步淘宝用户, 密码为用户名
-//			userService.addUserIfNecessary(nick, shop.getTitle());
+			userService.addUserIfNecessary(nick, nick);
 			userCache.put(nick, sessionKey);
 			model.addAttribute("username", nick);
 			model.addAttribute("password", EncryptUtil.md5(nick));
@@ -126,4 +144,30 @@ public class TopAuthController {
 		return "auth/post";
 	}
 
+	
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "top_oauth_wms")
+	public String oauthWms(HttpServletRequest request, HttpServletResponse response, Model model) throws ApiException,
+			IOException {
+		String error = request.getParameter("error");
+		if (StringUtils.isNotBlank(error)) {
+			String error_description = request.getParameter("error_description");
+			System.out.println(error_description);
+		}
+		String code = request.getParameter("code");
+		model.addAttribute("code", code);
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("code", code);
+		params.put("client_id", wmsAppkey);
+		params.put("client_secret", wmsAppSecret);
+		params.put("grant_type", "authorization_code");
+		params.put("redirect_uri", wmsRedirectUri);
+		String json = WebUtils.doPost(tokenUrl, params, 1000, 1000);
+		ObjectMapper mapper = new ObjectMapper();
+		Map<String, String> value = mapper.readValue(json, Map.class);
+		String sessionKey = value.get("access_token");
+		ShiroContextUtils.setWmsSessionKey(sessionKey);
+		return "redirect:/trade/waits/wms";
+	}
+	
 }

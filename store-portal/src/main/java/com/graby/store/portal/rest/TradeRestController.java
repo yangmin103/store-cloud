@@ -40,6 +40,16 @@ public class TradeRestController {
 		}
 		return new ResponseEntity<String>(MessageContextHelper.getMessage(), HttpStatus.OK);
 	}
+	
+	@RequestMapping(value = "/wms.create", method = RequestMethod.POST)
+	public ResponseEntity<String> wms(@RequestParam(value = "tids") String[] tids, @RequestParam(value = "cp") String cp)
+			throws NumberFormatException, ApiException {
+		synchronized (this) {
+			shipOrderService.createWmsOrder(Long.valueOf(tids[0]), cp);
+		}
+		return new ResponseEntity<String>(MessageContextHelper.getMessage(), HttpStatus.OK);
+	}
+	
 
 	/**
 	 * 商铺方通知用户签收 库存记账: 冻结->已销售
@@ -53,25 +63,6 @@ public class TradeRestController {
 	public ResponseEntity<String> notifyUser(@RequestParam(value = "tradeIds") Long[] tradeIds,
 			RedirectAttributes redirectAttributes) throws ApiException {
 		shipOrderService.batchNotifyUserSign(tradeIds);
-		return new ResponseEntity<String>(MessageContextHelper.getMessage(), HttpStatus.OK);
-	}
-	
-	@RequestMapping(value = "/test", method = RequestMethod.POST)
-	public ResponseEntity<String> test(@RequestParam(value = "tids") String[] tids) throws NumberFormatException, ApiException {
-//		synchronized (this) {
-			System.out.println("thread:" + Thread.currentThread().getId());
-			for (int i = 0; i < tids.length; i++) {
-				System.out.print(i + ",");
-			}
-//			try {
-//				Thread.sleep(5000);
-//			} catch (InterruptedException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-			System.out.println("\ndone");
-//		}
-		
 		return new ResponseEntity<String>(MessageContextHelper.getMessage(), HttpStatus.OK);
 	}
 

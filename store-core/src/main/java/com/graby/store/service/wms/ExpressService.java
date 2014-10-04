@@ -29,6 +29,9 @@ public class ExpressService {
 	@Value("classpath:data/express.xml")
 	private Resource express;
 	
+	@Value("classpath:data/expressWms.xml")
+	private Resource wmsExpress;
+	
 	/**
 	 * 快递公司Map
 	 * key=编码， value=快递公司实体
@@ -36,10 +39,16 @@ public class ExpressService {
 	private Map<String, Express> expressEntityMap = new HashMap<String, Express>();
 	
 	/**
-	 * 快递公司Map
+	 * 快递公司Map 纸质面单
 	 * key=编码， value=快递公司名称
 	 */
 	private Map<String, String> expressNameMap = new LinkedHashMap<String,String>();
+
+	/**
+	 * 快递公司Map 电子面单
+	 * key=编码， value=快递公司名称
+	 */
+	private Map<String, String> expressWmsNameMap = new LinkedHashMap<String,String>();
 	
 	@SuppressWarnings("unchecked")
 	@PostConstruct
@@ -56,10 +65,22 @@ public class ExpressService {
 			expressEntityMap.put(code, e);
 			expressNameMap.put(code,  name);
 		}
+		
+		doc = reader.read(wmsExpress.getFile());
+		companys = doc.selectNodes(xpath);
+		for (Element eleCompany : companys) {
+			String code = eleCompany.elementText("code");
+			String name = eleCompany.elementText("name");
+			expressWmsNameMap.put(code,  name);
+		}
 	}
 	
 	public Map<String,String> getExpressMap() {
 		return expressNameMap;
+	}
+	
+	public Map<String,String> getExpressWmsMap() {
+		return expressWmsNameMap;
 	}
 	
 	/**
