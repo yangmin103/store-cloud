@@ -117,7 +117,7 @@ public class TopAuthController {
 		} else if (sessionKey != null) {
 //			Shop shop = topApi.getShop(nick);
 			// 同步淘宝用户, 密码为用户名
-//			userService.addUserIfNecessary(nick, shop.getTitle());
+			userService.addUserIfNecessary(nick, nick);
 			userCache.put(nick, sessionKey);
 			model.addAttribute("username", nick);
 			model.addAttribute("password", EncryptUtil.md5(nick));
