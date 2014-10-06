@@ -605,13 +605,15 @@ public class ShipOrderService {
 	 * @return
 	 * @throws ApiException 
 	 */
-	public ShipOrder createWmsOrder(Long tradeId, String expressCode) throws ApiException {
-		ShipOrder sendOrder = tradeService.createSendShipOrderByTradeId(tradeId);
-		if (!expressCode.equals("-1")) {
-			chooseExpress(sendOrder.getId(), expressCode);
-		}
-		List<WaybillApplyNewInfo> infos = topWmsApi.wayBillGet(expressCode, toWaybillAddress4Receiver(sendOrder), toTradeOrderInfo(sendOrder));
-		return sendOrder;
+	public ShipOrder createWmsOrder() throws ApiException {
+//		ShipOrder sendOrder = tradeService.createSendShipOrderByTradeId(tradeId);
+//		if (!expressCode.equals("-1")) {
+//			chooseExpress(sendOrder.getId(), expressCode);
+//		}
+//		List<WaybillApplyNewInfo> infos = topWmsApi.wayBillGet(expressCode, toWaybillAddress4Receiver(sendOrder), toTradeOrderInfo(sendOrder));
+//		return sendOrder;
+		topWmsApi.wayBillGet(null, null, null);
+		return null;
 	}
 	
 	private static WaybillAddress toWaybillAddress4Receiver(ShipOrder shipOrder) {

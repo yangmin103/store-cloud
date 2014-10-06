@@ -33,7 +33,8 @@ uri="http://java.sun.com/jsp/jstl/functions" %>
 				chk_value.push($(this).val());
 			});
 			if (chk_value.length == 0) {
-				alert('你还没有选择任何订单！');
+				//alert('你还没有选择任何订单！');
+				postTrade(1);
 			} else {
 				var arr = new Array();
 				var size = 200;
@@ -51,7 +52,6 @@ uri="http://java.sun.com/jsp/jstl/functions" %>
 		
 		function postTrade(tids) {
 			var action = "${ctx}/rest/trade/wms.create?tids=" + tids + "&cp=" + $("#expressCompany").val();
-			alert(action);
 			$.post(action, function(data) {
 				$.globalMessenger().post({
 					message : data,
