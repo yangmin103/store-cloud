@@ -43,8 +43,8 @@ public class TopAuthController {
 	@Value("${top.appSecret}")
 	private String clientSecret = "f2e7f709ff1a05f6e09745612a048a61";
 	
-	@Value("${top_wms.redirectUri}")
-	private String redirectUri = "http://127.0.0.1:8080/top_oauth";
+	@Value("${top.redirectUri}")
+	private String redirectUri = "http://www.wlpost.com/top_oauth";
 	
 	// * ------WMS APP-------- */
 	

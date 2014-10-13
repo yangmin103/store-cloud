@@ -23,6 +23,7 @@ import com.graby.store.service.trade.TradeService;
 import com.graby.store.service.wms.ExpressService;
 import com.graby.store.service.wms.ShipOrderService;
 import com.graby.store.web.auth.ShiroContextUtils;
+import com.graby.store.web.top.TopWmsApi;
 import com.graby.store.web.top.TradeTrace;
 import com.taobao.api.ApiException;
 import com.taobao.api.domain.Refund;
@@ -44,6 +45,9 @@ public class TradeController {
 
 	@Autowired
 	private ExpressService expressService;
+	
+	@Autowired
+	private TopWmsApi topWmsApi;
 
 	/**
 	 * 活动专场 用于大批量团购
@@ -106,10 +110,9 @@ public class TradeController {
 	 */
 	@RequestMapping(value = "/waits/wms")
 	public String waitsWms(Model model) {
-		String url = "https://oauth.tbsandbox.com/authorize?response_type=code&client_id=1023012748&redirect_uri=http://127.0.0.1:8080/top_oauth_wms";
 		String wmsSessionKey = ShiroContextUtils.getWmsSessionKey();
 		if (wmsSessionKey == null) {
-			return "redirect:" + url;
+			return "redirect:" + topWmsApi.getAuthurl();
 		}
 		// 如果已登录 wsm app session
 		Map<String, Object> params = new HashMap<String, Object>();

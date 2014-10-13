@@ -21,4 +21,17 @@ public class UserService {
 	public List<User> findAll() {
 		return userDao.findAll();
 	}
+	
+	public User getUser(long userid) {
+		return userDao.get(userid);
+	}
+	
+	public void updateDesc(long id, String desc) {
+		userDao.updateDesc(id, desc);
+	}
+	
+	public void save(User user) {
+		userDao.save(user);
+	}
+	
 }

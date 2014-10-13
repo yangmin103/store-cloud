@@ -44,7 +44,7 @@ public class AuthService {
 			String passwd = EncryptUtil.md5(nick);
 			newUser.setPlainPassword(passwd);
 			entryptPassword(newUser);
-			newUser.setDescription("淘宝卖家账号");
+			newUser.setDescription("");
 			userDao.save(newUser);
 			return newUser.getId();
 		}

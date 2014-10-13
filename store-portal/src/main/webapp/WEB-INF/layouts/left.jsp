@@ -30,5 +30,9 @@
 	<div class="submenu">
 		<a href="${ctx}/report/sellout">商品统计</a>
 		<a href="${ctx}/report/ship">发货纪录</a>
-	</div>	
+	</div>
+	<h1>配置信息</h1>
+	<div class="submenu">
+		<a href="${ctx}/profile/edit">商家信息配置</a>
+	</div>		
 </div>

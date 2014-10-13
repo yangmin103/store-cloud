@@ -30,22 +30,35 @@ import com.taobao.api.response.WlbWaybillGetResponse;
 @Component
 public class TopWmsApi {
 
-	// ----------------- 默认开发环境 ----------------- //
 
 	@Value("${top_wms.appkey}")
-	private String appKey = "23018428";
+	private String appKey = "";
 
 	@Value("${top_wms.appSecret}")
-	private String appSecret = "f2e7f709ff1a05f6e09745612a048a61";
+	private String appSecret = "";
 
 	@Value("${top.serverUrl}")
-	private String serverUrl = "http://gw.api.taobao.com/router/rest";
+	private String serverUrl = "";
+	
+	@Value("${top_wms.redirectUri}")
+	private String wmsRedirectUri = "";
 
 	private DefaultTaobaoClient client;
 
 	@PostConstruct
 	public void init() {
 		client = new DefaultTaobaoClient(serverUrl, appKey, appSecret, "json");
+	}
+	
+	public String getAuthurl()  {
+		String env = System.getenv("mode");
+		boolean online = env != null && env.equalsIgnoreCase("online");
+		StringBuffer url = new StringBuffer();
+//		url.append(online? "https://oauth.taobao.com/authorize?response_type=code":"https://oauth.tbsandbox.com/authorize?response_type=code");
+		url.append("https://oauth.taobao.com/authorize?response_type=code");
+		url.append("&client_id=" + appKey);
+		url.append("&redirect_uri=" + wmsRedirectUri);
+		return url.toString();
 	}
 
 	public List<WaybillApplyNewInfo> wayBillGet(String cpCode, WaybillAddress address,

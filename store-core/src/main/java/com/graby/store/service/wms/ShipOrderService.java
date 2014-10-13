@@ -26,6 +26,7 @@ import com.graby.store.entity.ShipOrderDetail;
 import com.graby.store.entity.Trade;
 import com.graby.store.entity.User;
 import com.graby.store.entity.ShipOrder.SendOrderStatus;
+import com.graby.store.service.base.UserService;
 import com.graby.store.service.inventory.AccountEntryArray;
 import com.graby.store.service.inventory.AccountTemplate;
 import com.graby.store.service.inventory.InventoryService;
@@ -38,6 +39,7 @@ import com.taobao.api.ApiException;
 import com.taobao.api.domain.TradeOrderInfo;
 import com.taobao.api.domain.WaybillAddress;
 import com.taobao.api.domain.WaybillApplyNewInfo;
+import com.taobao.api.internal.util.json.JSONReader;
 
 @Component
 @Transactional(readOnly = true)
@@ -313,7 +315,7 @@ public class ShipOrderService {
 		for (ShipOrder shipOrder : orders) {
 			shipOrder.setItems(buildItems(shipOrder));
 			shipOrder.setRemark(buildRemark(shipOrder));
-			shipOrder.setOriginPhone("0731-52777568");
+			shipOrder.setOriginPhone(getPhone(shipOrder.getTradeId()));
 			companyCode = shipOrder.getExpressCompany();
 			companyName = companyCode == null ? "未分类" : expressService.getExpressCompanyName(companyCode);
 			shipOrder.setExpressCompanyName(companyName);
@@ -321,6 +323,8 @@ public class ShipOrderService {
 		}
 		return results;
 	}
+	
+	
 
 	/**
 	 * 提交给运单打印的商品明细字段
@@ -331,16 +335,19 @@ public class ShipOrderService {
 	private String buildItems(ShipOrder order) {
 		StringBuffer buf = new StringBuffer();
 		// 放商品明细
+		int total = 0;
 		for (Iterator<ShipOrderDetail> iterator = order.getDetails().iterator(); iterator.hasNext();) {
 			ShipOrderDetail detail = iterator.next();
-			buf.append(detail.getItemTitle() + detail.getSkuPropertiesName()).append("(" + detail.getNum() + ")件");
+			total += detail.getNum();
+			buf.append(detail.getItemTitle() + detail.getSkuPropertiesName()).append(":" + detail.getNum() + "件");
 			if (iterator.hasNext()) {
 				buf.append(",\n");
 			}
 		}
-		if (buf.length() > 80) {
+		if (buf.length() > 120) {
 			buf = new StringBuffer("商品过多 请根据拣货单拣货,");
 		}
+		order.setTotalnum(total);
 		return buf.toString();
 	}
 
@@ -642,6 +649,21 @@ public class ShipOrderService {
 		return tradeOrderInfos;
 	}
 	
+	
+	@Autowired
+	private UserService userService;
+	
+	private String getPhone(long tradeId) {
+		String phone = "0731-52777568";
+		User user = userService.getUser(tradeService.getTrade(tradeId).getUser().getId());
+		Map<String,String> profile = (Map<String,String>)reader.read(user.getDescription());
+		if (profile != null) {
+			phone = profile.get("phone"); 
+		}
+		return phone;
+	}
+	private static JSONReader reader = new JSONReader() {
+	};
 	
 
 }

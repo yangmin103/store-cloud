@@ -154,7 +154,8 @@
 		a.seller_memo as "sellerMemo",
 		a.remark,
 		a.orderno,
-		a.express_company as "expressCompany"
+		a.express_company as "expressCompany",
+  		a.trade_id as "tradeId"	
 		FROM sc_ship_order a LEFT JOIN sc_user b ON a.create_userid = b.id
 		WHERE type='send' and a.status='WAIT_EXPRESS_RECEIVED' and a.centro_id=#{0} limit #{1}
 	</select>
