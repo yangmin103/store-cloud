@@ -10,7 +10,6 @@
 </head>
 <script type="text/javascript">
 	$(function() {
-   		// Loading ������
 		$('#loadingDiv')
 		.hide();
 	});
@@ -19,7 +18,6 @@
 	
 		$('#loadingDiv').hide();
 		
-		// ��ㄩ��浜�浠�
 	   	$("#selectAll").live('click',function() {
 	   		if($(this).attr("checked") == "checked") {
 	   			$("input[name='trade_select[]']").each(function() {
@@ -32,21 +30,20 @@
 	   		}
 		});
 		
-		// ���寮�娣�瀹����������琛ㄥ�宠��
 		$("a[data-toggle=modal]").click(function(){
 			var chk_value =[];  
 	  		$('input[name="trade_select[]"]:checked').each(function(){  
 	   		chk_value.push($(this).val());
 	  		});
 	  		if (chk_value.length==0) {
-	  			alert('浣�杩�娌℃�������╀换浣�璁㈠��锛�');
+	  			alert('未选择订单');
 	  			return;
 	  		}
 		});	
 		
 		$('#confirm').confirm({
-			'title' : '������',
-			'message' : '纭�璁ゅ����よ�ヨ�㈠��',
+			'title' : '确定',
+			'message' : '确定？',
 		});			
 	});
 	
@@ -57,7 +54,7 @@
 	   		chk_value.push($(this).val());
   		});
   		if (chk_value.length==0) {
-  			alert('浣�杩�娌℃�������╀换浣�璁㈠��锛�');
+  			alert('未选择订单');
   			return;
   		}
   		auditTrade(chk_value, expressId);
@@ -80,13 +77,13 @@
 	
 	<table id="contentTable" class="table table-striped table-condensed"  >
 		<thead><tr>
-		<th>��ユ��������</th>
-		<th>寤哄����堕��</th>
-		<th>浜ゆ��璁㈠�����</th>
-		<th class="span3">��惰揣��板��</th>
-		<th class="span4">璁㈣喘������</th>
-		<th class="span3">澶�娉�</th>	
-		<th><input type="checkbox" id="selectAll" name="selectAll"/> ��ㄩ��</th>
+		<th>商铺</th>
+		<th>支付日期</th>
+		<th>订单来源</th>
+		<th class="span3">寄送地址</th>
+		<th class="span4">购买商品</th>
+		<th class="span3">备注</th>	
+		<th><input type="checkbox" id="selectAll" name="selectAll"/> 全选</th>
 		</tr></thead>
 		<tbody>
 		<c:forEach items="${trades}" var="trade">
@@ -101,11 +98,10 @@
 				<td class="span3">${trade.itemTitles}
 				</td>			
 				<td>
-					涔板�讹��${trade.buyerMemo} ${trade.buyerMessage} <br>
-					���瀹讹��${trade.sellerMemo}
+					买家留言：${trade.buyerMemo} ${trade.buyerMessage} <br>
+					卖家留言：${trade.sellerMemo}
 				</td>
 				<td>
-					${trade.id}
 					<input type='checkbox' id='trade_select' name='trade_select[]' value='${trade.id}' />
 				</td>
 			</tr>
@@ -116,7 +112,7 @@
 	
 	<div class="row">
 	  	<div class="pull-right">
-	  		<a class="btn btn-primary" data-toggle="modal" href="#myModal" >��归��瀹℃��</a>
+	  		<a class="btn btn-primary" data-toggle="modal" href="#myModal" >批量审核</a>
 	  		<!-- 
 	  		<a id="btn_pick" href="#" class="btn btn-info">��归��������</a>&nbsp;&nbsp;&nbsp;&nbsp;
 	  		 -->
@@ -125,15 +121,15 @@
 	
 	<div class="modal hide fade" id="myModal">
  		<div class="modal-header">
-    		<a class="close" data-dismiss="modal">��</a>
-    		<h3>��归��瀹℃�歌�㈠��</h3>
+    		<a class="close" data-dismiss="modal">批量审核</a>
+    		<h3>批量审核订单</h3>
   		</div>
   		<div class="modal-body">
     		<p>
     		<span id="tids"></span>
-            杩�杈������革��
+            快递公司选择
             <select name="expressCompany" id="expressCompany">
-		    	<option value="-1">���������</option>
+		    	<option value="-1">未选择</option>
 		    	<c:forEach items="${expressCompanys}" var="e">
 		    		<option value="${e.key}">${e.value}</option>
 		    	</c:forEach>
@@ -141,8 +137,8 @@
 		    </p>
   		</div>
 		<div class="modal-footer">
-			<a href="#" class="btn" data-dismiss="modal">��抽��</a>
-	    	<a href="javascript:postSelected();" class="btn btn-primary">瀹℃�搁��杩�</a>
+			<a href="#" class="btn" data-dismiss="modal">关闭</a>
+	    	<a href="javascript:postSelected();" class="btn btn-primary">审核通过</a>
 	  	</div>
 	</div>
 	 

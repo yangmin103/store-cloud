@@ -563,6 +563,13 @@ public class TradeService {
 		tradeDao.deleteTrade(tradeId);
 	}
 	
+	public void reset(long tradeId) {
+		tradeDao.deleteShipOrderDetail(tradeId);
+		tradeDao.deleteShipOrder(tradeId);
+		tradeDao.deleteTradeMapping(tradeId);
+		updateTradeStatus(tradeId, Trade.Status.TRADE_WAIT_CENTRO_AUDIT);
+	}
+	
 	/**
 	 * 交易订单拆分
 	 * @param tradeId

@@ -219,14 +219,14 @@
 			receiver_state AS "receiverState"
 		FROM sc_trade a  
 			LEFT JOIN sc_user b ON b.id = a.user_id 
-		WHERE  a.centro_id=1 and a.status!='TRADE_FINISHED' LIMIT #{0},#{1}
+		WHERE  a.centro_id=1 and a.status='TRADE_WAIT_EXPRESS_SHIP' LIMIT #{0},#{1}
 	</select>
 	<select id="countUnfinishedTrades" resultType="long">
 		SELECT 
 			count(1)
 		FROM sc_trade a  
 			LEFT JOIN sc_user b ON b.id = a.user_id 
-		WHERE  a.centro_id=1 and a.status!='TRADE_FINISHED'
+		WHERE  a.centro_id=1 and a.status='TRADE_WAIT_EXPRESS_SHIP'
 	</select>	
 	
 	

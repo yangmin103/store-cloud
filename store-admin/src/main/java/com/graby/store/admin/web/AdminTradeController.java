@@ -160,6 +160,18 @@ public class AdminTradeController {
 	}
 
 	/**
+	 * 删除订单
+	 * 
+	 * @param tradeId
+	 * @return
+	 */
+	@RequestMapping(value = "reset/{id}", method = RequestMethod.GET)
+	public String resetTrade(@PathVariable(value = "id") Long tradeId) {
+		tradeRemote.reset(tradeId);
+		return "redirect:/trade/unfinish";
+	}
+	
+	/**
 	 * 查询被拆分订单
 	 * 
 	 * @param model

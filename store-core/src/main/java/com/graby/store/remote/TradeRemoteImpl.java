@@ -72,6 +72,11 @@ public class TradeRemoteImpl implements TradeRemote {
 	public void deleteTrade(Long tradeId) {
 		tradeService.deleteTrade(tradeId);
 	}
+	
+	@Override
+	public void reset(Long tradeId) {
+		tradeService.reset(tradeId);
+	}
 
 	@Override
 	public List<Map<String, String>> findWaitAuditCitys() {

@@ -98,6 +98,12 @@ public interface TradeRemote {
 	void deleteTrade(Long tradeId);
 	
 	/**
+	 * 退回待处理了
+	 * @param tradeId
+	 */
+	void reset(Long tradeId);
+	
+	/**
 	 * 拆分交易订单
 	 * @param tradeId
 	 * @param orderId
