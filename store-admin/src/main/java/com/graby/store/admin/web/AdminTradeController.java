@@ -244,10 +244,6 @@ public class AdminTradeController {
 		for (Long tradeId : tradeIds) {
 			auditOneTrade(tradeId, expressCompany);
 		}
-		// for (Long id : tradeIds) {
-		// System.out.print(id + ",");
-		// }
-		// System.out.println();
 		return "/admin/success";
 	}
 

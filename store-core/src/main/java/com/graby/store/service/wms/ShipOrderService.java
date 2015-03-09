@@ -2,6 +2,7 @@ package com.graby.store.service.wms;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -25,7 +26,6 @@ import com.graby.store.entity.ShipOrder;
 import com.graby.store.entity.ShipOrderDetail;
 import com.graby.store.entity.Trade;
 import com.graby.store.entity.User;
-import com.graby.store.entity.ShipOrder.SendOrderStatus;
 import com.graby.store.service.base.UserService;
 import com.graby.store.service.inventory.AccountEntryArray;
 import com.graby.store.service.inventory.AccountTemplate;
@@ -36,10 +36,11 @@ import com.graby.store.web.auth.ShiroContextUtils;
 import com.graby.store.web.top.TopApi;
 import com.graby.store.web.top.TopWmsApi;
 import com.taobao.api.ApiException;
+import com.taobao.api.domain.PackageItem;
 import com.taobao.api.domain.TradeOrderInfo;
 import com.taobao.api.domain.WaybillAddress;
-import com.taobao.api.domain.WaybillApplyNewInfo;
 import com.taobao.api.internal.util.json.JSONReader;
+import com.taobao.api.response.WlbWaybillIGetResponse;
 
 @Component
 @Transactional(readOnly = true)
@@ -612,43 +613,80 @@ public class ShipOrderService {
 	 * @return
 	 * @throws ApiException 
 	 */
-	public ShipOrder createWmsOrder() throws ApiException {
-//		ShipOrder sendOrder = tradeService.createSendShipOrderByTradeId(tradeId);
-//		if (!expressCode.equals("-1")) {
-//			chooseExpress(sendOrder.getId(), expressCode);
-//		}
-//		List<WaybillApplyNewInfo> infos = topWmsApi.wayBillGet(expressCode, toWaybillAddress4Receiver(sendOrder), toTradeOrderInfo(sendOrder));
-//		return sendOrder;
-		topWmsApi.wayBillGet(null, null, null);
-		return null;
+	public void createWmsOrder(String cpCode, String[] tids) throws ApiException {
+		for (String tid : tids) {
+			// 创建出库单
+			ShipOrder order = getSendShipOrderByTradeId(Long.valueOf(tid));
+			if (order == null) {
+				order = tradeService.createSendShipOrderByTradeId(Long.valueOf(tid));
+			}
+			// 设置电子面单号
+			if (StringUtils.isEmpty(order.getExpressOrderno())) {
+	 			WaybillAddress address = toWaybillAddress(order);
+				TradeOrderInfo tradeOrderInfo = toTradeOrderInfo(order);
+				WlbWaybillIGetResponse resp = topWmsApi.wayBillGet(cpCode, address, tradeOrderInfo);
+				if (resp.isSuccess()) {
+					// 设置出库单状态
+					String billCode = resp.getWaybillApplyNewCols().get(0).getWaybillCode();
+					order.setExpressCompany(cpCode);
+					order.setExpressOrderno(billCode);
+					order.setBuyerMemo("WAYBILL");
+					updateShipOrder(order);
+					MessageContextHelper.append("电子面单创建成功:" + billCode);
+				} else {
+					tradeService.updateTradeStatus(order.getTradeId(), Trade.Status.TRADE_WAIT_CENTRO_AUDIT);
+					deleteShipOrder(order.getId());
+					MessageContextHelper.append("电子面单创建失败:" + resp.getMsg());
+				}
+			}
+		}
 	}
 	
-	private static WaybillAddress toWaybillAddress4Receiver(ShipOrder shipOrder) {
+	private WaybillAddress toWaybillAddress(ShipOrder shipOrder) {
 		WaybillAddress address = new WaybillAddress();
 		address.setProvince(shipOrder.getReceiverState()); // 省
 		address.setCity(shipOrder.getReceiverCity()); // 市
 		address.setArea(shipOrder.getReceiverDistrict()); // 区
-		address.setAddressDetail(shipOrder.getReceiverAddressDetail()); // 地址
+		address.setTown(shipOrder.getReceiverDistrict()); // TODO 街道
+		address.setAddressDetail(shipOrder.getReceiverAddress()); // 地址
 		return address;
 	}
 	
-	private static List<TradeOrderInfo>  toTradeOrderInfo(ShipOrder order) {
-		List<TradeOrderInfo> tradeOrderInfos = new ArrayList<TradeOrderInfo>();
-		TradeOrderInfo item = new TradeOrderInfo();
-		item.setConsigneeAddress(toWaybillAddress4Receiver(order));
-		item.setConsigneeName(order.getReceiverName());
-		item.setConsigneePhone(order.getReceiverMobile());
-		item.setItemName("测试");
-		item.setShortAddress("530");
-		List<String> details = new ArrayList<String>();
-		for (ShipOrderDetail detail : order.getDetails()) {
-			details.add(detail.getItemTitle() + detail.getSkuPropertiesName());
+	private TradeOrderInfo toTradeOrderInfo(ShipOrder shipOrder) {
+		TradeOrderInfo tradeOrderInfo = new TradeOrderInfo();
+		
+		// 发货人
+		tradeOrderInfo.setSendPhone(shipOrder.getSellerMobile() + " " + shipOrder.getSellerPhone());
+		tradeOrderInfo.setSendName(shipOrder.getBuyerNick());
+		
+		// 收货人
+		tradeOrderInfo.setConsigneeAddress(toWaybillAddress(shipOrder));
+		tradeOrderInfo.setConsigneeName(shipOrder.getReceiverName()); // 收货人
+		tradeOrderInfo.setConsigneePhone(shipOrder.getReceiverMobile() + " " + shipOrder.getReceiverPhone()); // 收货人电话
+		
+		// 订单来源
+		String tids = tradeService.getTrade(shipOrder.getTradeId()).getTradeFrom();
+		List<String> orderList = Arrays.asList(tids.split(","));
+		tradeOrderInfo.setTradeOrderList(orderList);
+		
+		// 商品信息
+		shipOrder.setItems(buildItems(shipOrder));
+		tradeOrderInfo.setItemName(shipOrder.getItems());
+		List<ShipOrderDetail> details = shipOrder.getDetails();
+		List<PackageItem> items = new ArrayList<PackageItem>(details.size());
+		for (ShipOrderDetail detail : details) {
+			PackageItem packageItem = new PackageItem();
+			packageItem.setCount(detail.getNum());
+			packageItem.setItemName(detail.getItemTitle());
+			items.add(packageItem);
 		}
-		item.setTradeOrderList(details);
-		tradeOrderInfos.add(item);
-		return tradeOrderInfos;
+		tradeOrderInfo.setPackageItems(items);
+		tradeOrderInfo.setOrderChannelsType("TB");
+		tradeOrderInfo.setProductType("STANDARD_EXPRESS");
+		tradeOrderInfo.setRealUserId(ShiroContextUtils.getUserid()); // 使用者ID
+		
+		return tradeOrderInfo;
 	}
-	
 	
 	@Autowired
 	private UserService userService;

@@ -134,28 +134,7 @@
   	<select id="findSendOrderWaits" parameterType="long" resultMap="ShipOrderEntity">
 		SELECT 
 		b.shop_name as "createUser.shopName", 
-		create_date as "createDate",
-		a.id, a.centro_id as "centroId",
-		a.origin_persion as "originPersion",
-		a.origin_phone as "originPhone",
-		a.receiver_address as "receiverAddress", 
-		a.receiver_city as "receiverCity",
-		a.receiver_state as "receiverState", 
-		a.receiver_name as "receiverName", 
-		a.receiver_mobile as "receiverMobile",
-		a.receiver_phone as "receiverPhone", 
-		a.receiver_district as "receiverDistrict", 
-		a.receiver_zip as "receiverZip",
-		a.buyer_nick as "buyerNick",
-		a.buyer_memo as "buyerMemo",
-		a.buyer_message as "buyerMessage",
-		a.seller_phone as "sellerPhone", 
-		a.seller_mobile as "sellerMobile", 
-		a.seller_memo as "sellerMemo",
-		a.remark,
-		a.orderno,
-		a.express_company as "expressCompany",
-  		a.trade_id as "tradeId"	
+		a.*
 		FROM sc_ship_order a LEFT JOIN sc_user b ON a.create_userid = b.id
 		WHERE type='send' and a.status='WAIT_EXPRESS_RECEIVED' and a.centro_id=#{0} limit #{1}
 	</select>

@@ -28,13 +28,19 @@ uri="http://java.sun.com/jsp/jstl/functions" %>
 		});
 
 		$('#submit').bind('click', function(e) {
+			
+			var expressValue = $('#expressCompany').val();
+			if (expressValue == '-1') {
+				alert('请选择物流公司');
+				return;
+			}
+			
 			var chk_value = [];
 			$('input[name="trade_select[]"]:checked').each(function() {
 				chk_value.push($(this).val());
 			});
 			if (chk_value.length == 0) {
-				//alert('你还没有选择任何订单！');
-				postTrade(1);
+				alert('你还没有选择任何订单！');
 			} else {
 				var arr = new Array();
 				var size = 200;
@@ -52,21 +58,18 @@ uri="http://java.sun.com/jsp/jstl/functions" %>
 		
 		function postTrade(tids) {
 			var action = "${ctx}/rest/trade/wms.create?tids=" + tids + "&cp=" + $("#expressCompany").val();
-			$.post(action, function(data) {
-				$.globalMessenger().post({
-					message : data,
-					showCloseButton : true
-				});
-				$("#body").html(data);
-			});
+		    $.post(action, function(data){
+			    $.globalMessenger().post({message:data,  showCloseButton: true});
+			    $("#body").html(data);
+		    });
 		}
 
 	});
 </script>
 </head>
 
-<body id="body">
-
+<body>
+<div id="body">
 	<table id="contentTable" class="table table-striped table-condensed">
 		<thead>
 			<tr>
@@ -115,6 +118,6 @@ uri="http://java.sun.com/jsp/jstl/functions" %>
 	  		<a id="submit" href="#" class="btn btn-success pull-right">设置电子面单</a>
 		</div>
 	</div>
-
+</div>
 </body>
 </html>

@@ -1,6 +1,7 @@
 package com.graby.store.web.top;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -16,12 +17,14 @@ import com.graby.store.web.auth.ShiroContextUtils;
 import com.taobao.api.ApiException;
 import com.taobao.api.DefaultTaobaoClient;
 import com.taobao.api.TaobaoResponse;
+import com.taobao.api.domain.PackageItem;
 import com.taobao.api.domain.TradeOrderInfo;
 import com.taobao.api.domain.WaybillAddress;
 import com.taobao.api.domain.WaybillApplyNewInfo;
+import com.taobao.api.domain.WaybillApplyNewRequest;
 import com.taobao.api.internal.util.json.JSONWriter;
-import com.taobao.api.request.WlbWaybillGetRequest;
-import com.taobao.api.response.WlbWaybillGetResponse;
+import com.taobao.api.request.WlbWaybillIGetRequest;
+import com.taobao.api.response.WlbWaybillIGetResponse;
 
 /**
  * 电子面单
@@ -54,29 +57,62 @@ public class TopWmsApi {
 		String env = System.getenv("mode");
 		boolean online = env != null && env.equalsIgnoreCase("online");
 		StringBuffer url = new StringBuffer();
-//		url.append(online? "https://oauth.taobao.com/authorize?response_type=code":"https://oauth.tbsandbox.com/authorize?response_type=code");
-		url.append("https://oauth.taobao.com/authorize?response_type=code");
+		url.append(online? "https://oauth.taobao.com/authorize?response_type=code":"https://oauth.tbsandbox.com/authorize?response_type=code");
 		url.append("&client_id=" + appKey);
 		url.append("&redirect_uri=" + wmsRedirectUri);
 		return url.toString();
 	}
 
-	public List<WaybillApplyNewInfo> wayBillGet(String cpCode, WaybillAddress address,
-			List<TradeOrderInfo> tradeOrderInfos) throws ApiException {
-//		JSONWriter write = new JSONWriter();
-//		WlbWaybillGetRequest req = new WlbWaybillGetRequest();
-//		req.setCpCode(cpCode);
-//		req.setShippingAddress(write.write(address));
-//		req.setTradeOrderInfoCols(write.write(tradeOrderInfos));
-//		req.setTimestamp(new Date().getTime());
+	/**
+	 * 电子面单获取接口
+	 * @param cpCode
+	 * @param address
+	 * @param tradeOrderInfos
+	 * @return
+	 * @throws ApiException
+	 */
+	public WlbWaybillIGetResponse wayBillGet(String cpCode, WaybillAddress address, TradeOrderInfo tradeOrderInfo) throws ApiException {
 		
-		WlbWaybillGetRequest req=new WlbWaybillGetRequest();
-		req.setTradeOrderInfoCols("[{ \"consignee_address\": { \"address_detail\": \"文一西路969号\",\"area\": \"余杭区\",\"city\": \"杭州市\", \"province\": \"浙江省\"},\"consignee_name\": \"小明\",\"consignee_phone\": \"13512345678\",\"item_name\": \"测试\",\"order_channels_type\": \"TB\",\"trade_order_list\": [\"XXXXXX\"]}]");
-		req.setCpCode("SF");
-		req.setShippingAddress("{\"province\":\"浙江省\",\"city\":\"杭州市\",\"area\":\"余杭区\",\"address_detail\":\"文一西路969号\"}");
-		WlbWaybillGetResponse response = client.execute(req, ShiroContextUtils.getWmsSessionKey());
-		throwIfError(response);
-		return response.getResults();
+		WlbWaybillIGetRequest req=new WlbWaybillIGetRequest();
+		
+		WaybillApplyNewRequest waybillApplyNewRequest = new WaybillApplyNewRequest();
+		waybillApplyNewRequest.setCpCode(cpCode);
+		waybillApplyNewRequest.setShippingAddress(address);
+		
+		waybillApplyNewRequest.setTradeOrderInfoCols(tradeOrderInfo);
+		req.setWaybillApplyNewRequest(waybillApplyNewRequest);
+		WlbWaybillIGetResponse response = client.execute(req , ShiroContextUtils.getWmsSessionKey());
+		
+		
+//		waybillApplyNewRequest.setCpCode("SF");
+//		WaybillAddress waybillAddress = new WaybillAddress();
+//		waybillAddress.setProvince("浙江省");
+//		waybillAddress.setCity("杭州市");
+//		waybillAddress.setArea("余杭区");
+//		waybillAddress.setAddressDetail("文一西路969号");
+//		waybillApplyNewRequest.setShippingAddress(waybillAddress);
+		
+//		TradeOrderInfo tradeOrderInfo = new TradeOrderInfo();
+//		tradeOrderInfo.setConsigneeAddress(waybillAddress);
+//		tradeOrderInfo.setConsigneeName("张三");
+//		tradeOrderInfo.setConsigneePhone("13798870987");
+//		tradeOrderInfo.setItemName("测试商品");
+//		tradeOrderInfo.setWaybillCode("123456");
+//		tradeOrderInfo.setOrderChannelsType("TB");
+//		tradeOrderInfo.setProductType("STANDARD_EXPRESS");
+//		tradeOrderInfo.setRealUserId(123232L);
+		
+//		List<PackageItem> items = new ArrayList<PackageItem>();
+//		PackageItem packageItem = new PackageItem();
+//		packageItem.setCount(11L);
+//		packageItem.setItemName("衣服");
+//		items.add(packageItem);
+//		tradeOrderInfo.setPackageItems(items);
+		
+//		List<String> orderList = new ArrayList<String>();
+//		orderList.add("SW-20140403-00654");
+//		tradeOrderInfo.setTradeOrderList(orderList);
+		return response;
 	}
 
 	private void throwIfError(TaobaoResponse resp) {
@@ -90,10 +126,4 @@ public class TopWmsApi {
 		return write.write(object);
 	}
 
-	public static void main(String[] args) throws JsonGenerationException, JsonMappingException, IOException {
-		WaybillAddress addr = new WaybillAddress();
-		addr.setAddressDetail("aaass呵呵  啊啊");
-		System.out.println(toJsonString(addr));
-
-	}
 }

@@ -42,12 +42,11 @@ public class TradeRestController {
 	}
 	
 	@RequestMapping(value = "/wms.create", method = RequestMethod.POST)
-	public ResponseEntity<String> wms(@RequestParam(value = "tids") String[] tids, @RequestParam(value = "cp") String cp)
+	public ResponseEntity<String> wms(@RequestParam(value = "tids") String[] tids, @RequestParam(value = "cp") String cpCode)
 			throws NumberFormatException, ApiException {
-//		synchronized (this) {
-//			shipOrderService.createWmsOrder(Long.valueOf(tids[0]), cp);
-//		}
-		shipOrderService.createWmsOrder();
+		synchronized (this) {
+			shipOrderService.createWmsOrder(cpCode, tids);
+		}
 		return new ResponseEntity<String>(MessageContextHelper.getMessage(), HttpStatus.OK);
 	}
 	
