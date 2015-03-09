@@ -67,6 +67,13 @@ public interface TradeDao {
 	public List<Trade> findWaitAuditTradesBy(Map<String, Object> map);
 	
 	/**
+	 * 查询可合并的的待处理订单
+	 * @param map
+	 * @return
+	 */
+	public List<Trade> findSplitedTrades();
+	
+	/**
 	 * 查询待处理订单城市列表
 	 * @return
 	 */
@@ -92,6 +99,13 @@ public interface TradeDao {
 	 * @param status
 	 */
 	public void updateTradeStatus(Long tradeId, String status);
+	
+	/**
+	 * 设置订单合并编码
+	 * @param tradeId
+	 * @param status
+	 */
+	public void updateTradeMergeHash(Long tradeId, String hash);
 	
 	/**
 	 * 获取用户订单总数

@@ -73,7 +73,7 @@
 						</c:if>	
 					</td>
 					<td>
-						<a class="btn btn-primary" href="${ctx}/trade/delete/${trade.id}">删除</a>
+						<a class="btn btn-primary" href="${ctx}/trade/reset/${trade.id}">退回待处理</a>
 					</td>
 				</tr>
 			</c:forEach>

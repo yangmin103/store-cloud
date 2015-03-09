@@ -68,7 +68,7 @@
 	<div id="fetchBody">
 	</div>
 	
-	<div id="loadingDiv" class="hint">
+	<div id="loadingDiv" class="hint hide">
 		<img src = "${ctx}/static/images/fetch.gif">
 	</div>
 

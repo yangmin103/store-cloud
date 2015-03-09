@@ -96,5 +96,31 @@ public interface TradeRemote {
 	 * @param tradeId
 	 */
 	void deleteTrade(Long tradeId);
+	
+	/**
+	 * 退回待处理了
+	 * @param tradeId
+	 */
+	void reset(Long tradeId);
+	
+	/**
+	 * 拆分交易订单
+	 * @param tradeId
+	 * @param orderId
+	 */
+	void splitTrade(Long tradeId, Long orderId);
+	
+	/**
+	 * 合并交易订单
+	 * @param tradeId
+	 */
+	void mergeTrade(Long[] tradeIds);
+	
+	/**
+	 * 查询被拆分订单
+	 * @param map
+	 * @return
+	 */
+	public List<Trade> findSplitedTrades();
 
 }

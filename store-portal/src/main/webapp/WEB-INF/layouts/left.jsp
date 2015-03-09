@@ -19,16 +19,20 @@
 		 <a href="${ctx}/trade/test">test</a>
 		 -->
 		<a href="${ctx}/trade/waits">待发货订单</a>
+		<a href="${ctx}/trade/waits/wms">电子面单设置</a>
 		<a href="${ctx}/trade/refunds">退款处理</a>
 		<a href="${ctx}/trade/received">仓库已接收</a>
 		<a href="${ctx}/trade/search">订单查询</a>
 		<a href="${ctx}/trade/notifys">通知用户签收</a>
-		<!--
 		<a href="${ctx}/trade/traces">物流信息追踪</a>
-		-->
 	</div>
-	<h1>交易记录</h1>
+	<h1>统计查询</h1>
 	<div class="submenu">
-		<a href="${ctx}/report/sellout">售出商品</a>
-	</div>	
+		<a href="${ctx}/report/sellout">商品统计</a>
+		<a href="${ctx}/report/ship">发货纪录</a>
+	</div>
+	<h1>配置信息</h1>
+	<div class="submenu">
+		<a href="${ctx}/profile/edit">商家信息配置</a>
+	</div>		
 </div>

@@ -22,7 +22,7 @@ public class ItemRestController {
 	
 	/**
 	 * 同步所有淘宝商品
-	 * @return
+     * @return
 	 * @throws ApiException
 	 */
 	@RequestMapping(value = "/sync", method = RequestMethod.GET)
@@ -40,7 +40,7 @@ public class ItemRestController {
 	 * @throws ApiException
 	 */
 	@RequestMapping(value = "/relate/{numIid}/{skuId}", method = RequestMethod.GET)
-	@ResponseBody
+    @ResponseBody
 	public ResponseEntity<String> relateItem(
 			@PathVariable("numIid") Long numIid, 
 			@PathVariable("skuId") Long skuId) 

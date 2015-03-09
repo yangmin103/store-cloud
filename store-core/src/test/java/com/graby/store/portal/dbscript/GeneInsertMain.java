@@ -1,9 +1,12 @@
 package com.graby.store.portal.dbscript;
 
+import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
+
 public class GeneInsertMain {
 	
 	
 	public static String gene(String tablename, String[] props) {
+		ClassPathScanningCandidateComponentProvider a;
 		StringBuilder sql = new StringBuilder();
 		sql.append("insert into ").append(tablename).append(" ( \n");
 		for (int i = 0; i < props.length; i++) {

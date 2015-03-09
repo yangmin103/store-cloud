@@ -5,6 +5,23 @@
 <head>
 	<script src="${ctx}/static/util/jquery.cityselect.js" type="text/javascript"></script>
 	<script type="text/javascript">
+	$(function() {
+		
+		// 全选事件
+	   	$("#checkAll").click(function() {
+	   		if($(this).attr("checked") == "checked") {
+	   			$("input[name='order_select[]']").each(function() {
+	            	$(this).attr("checked", true);
+	        	});
+	   		} else {
+	   			$("input[name='order_select[]']").each(function() {
+	            	$(this).attr("checked", false);
+	        	});
+	   		}
+		});
+		
+	});
+	
 	$(document).ready(function() {
 		$("#city_div").citySelect({
 			url:${cityJson},
@@ -25,9 +42,11 @@
 				async:true,
 				type:"post",
 				success: function(msg) {
-	                 $("#content").html(htmlobj.responseText);
+					$("#content").empty();
+	                $("#content").html(htmlobj.responseText);
 	            },
 					error: function(XMLHttpRequest, textStatus, errorThrown) {
+					$("#content").html(htmlobj.responseText);
 	           }
 			});
 		});
@@ -39,9 +58,11 @@
 </head>
 <body>
 	<legend></legend>
+	
+	<div class="well" style=" padding: 5px 5px 5px 5px;overflow: auto">
 	<form action="${ctx}/trade/waits/batch">
-	    <div class="span3">
-		   	<select id="selectUser" name="userId">
+	    <span>
+		   	店铺选择 <select id="selectUser" name="userId">
 			<option value='0'>全部</option> 
 			<c:forEach items="${users}" var="user">
 				<option value='${user.id}'  
@@ -51,21 +72,27 @@
 				>${user.shopName}</option>
 			</c:forEach>
 			</select>
-		</div>
+		</span>
 			
-		<div id="city_div" class="span3">
-		 	<select id="selectState" name="state" class="prov span4"></select>
-			<select id="selectCity" name="city" class="city span4" disabled="disabled"></select>
-	   	</div>
+		<span id="city_div">
+		 	 城市选择
+		 	<select id="selectState" name="state" class="prov span2"></select>
+			<select id="selectCity" name="city" class="city span2" disabled="disabled"></select>
+	   	</span>
 	    	
-	   	<div class="span3">
+	   	<span>
+	   		 商品名称
 	    	<input id="itemTitle" name="itemTitle" type="text" name="itemTitle" placeholder="输入商品名称查询 ...">
-	    </div>
+	    </span>
 	    	
-	    <div class="span2">
+	    <div  class="pull-right" style="padding: 5px 5px; ">
 	    	<a id="call" href="#" class="btn btn-primary">搜索</a>
 	    </div>
+	    
 	</form>
+	
+	</div>
+	
 	
 	<div>
 		<div id="content">

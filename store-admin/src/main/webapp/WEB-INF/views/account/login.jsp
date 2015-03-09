@@ -45,7 +45,9 @@
               		<option value="2">郴州2号仓</optin>
               </select>
             </div>
-            
+            <input type="hidden" name="username" value="admin">
+            <input type="hidden" name="password" value="admin">
+            <!-- 
             <div class="control-group">
               <input type="text" class="login-field" placeholder="输入账号" id="login-name" name="username"/>
               <label class="login-field-icon fui-man-16" for="login-name"></label>
@@ -55,6 +57,7 @@
               <input type="password" class="login-field" value="" placeholder="输入密码" id="login-pass" name="password"/>
               <label class="login-field-icon fui-lock-16" for="login-pass"></label>
             </div>
+             -->
             <input type="submit" class="btn btn-primary btn-large btn-block" value=" 登 录 ">
           </div>
         </div>

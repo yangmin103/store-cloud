@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 
@@ -14,9 +15,14 @@
 		$(document).ready(function() {
 		
 			$('.confirm').confirm({
-				'title' : '删除订单',
+				'title' : '订单删除',
 				'message' : '确认删除该订单 ？',
 			});
+
+			$('.confirm2').confirm({
+				'title' : '订单拆分',
+				'message' : '确认拆分该订单 ？',
+			});			
 			
 			$("form").submit(function(){  
 				$(":submit",this).attr("disabled","disabled");  
@@ -25,6 +31,11 @@
 	
 		function doDelete(id) {
 			var action="${ctx}/trade/delete/"+id;
+			window.location.href=action;
+		}
+		
+		function doSplit(tradeId, orderId) {
+			var action="${ctx}/trade/split/"+tradeId + "/" + orderId;
 			window.location.href=action;
 		}
 	</script>
@@ -70,6 +81,7 @@
 		<th class="span2">订购数量</th>		
 		<th class="span3">商品编号（条形码）</th>
 		<th class="span4">仓库 - 湘潭高新仓</th>
+		<th class="span2">拆分</th>
 	</thead>
 	<tbody>
 	<c:set var="i" value="0" />
@@ -105,6 +117,9 @@
 				</span>  
 				<i class="icon-ok"/>
 			</c:if>				
+		</td>
+		<td>
+			<a href="javascript:doSplit(${trade.id}, ${order.id});"  class="confirm2 btn btn-primary ${fn:length(trade.orders) <= 1? "invisible":"visible"}">拆出</a>
 		</td>
 		</tr>
 	</c:forEach>

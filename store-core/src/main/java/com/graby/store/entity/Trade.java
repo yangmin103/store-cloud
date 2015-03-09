@@ -226,6 +226,11 @@ public class Trade implements Serializable{
 	 */
 	private String receiverZip;
 	
+	/**
+	 * 合并标签
+	 */
+	private String mergeHash;
+	
 	
 	/* ------------ 子订单 ------------ */
 	
@@ -549,6 +554,14 @@ public class Trade implements Serializable{
 
 	public void setTag(String tag) {
 		this.tag = tag;
+	}
+	
+	public String getMergeHash() {
+		return mergeHash;
+	}
+
+	public void setMergeHash(String mergeHash) {
+		this.mergeHash = mergeHash;
 	}
 
 }

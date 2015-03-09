@@ -11,6 +11,7 @@ public interface UserDao {
 	User findUserByUsername(String username);
 	User get(long id);
 	void save(User user);
+	void updateDesc(long id, String desc);
 	void delete(Long id);
 	List<User> findAll();
 	

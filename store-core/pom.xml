@@ -28,7 +28,12 @@
 			<artifactId>api</artifactId>
 			<version>1.0</version>
 		</dependency>
-
+		<dependency>
+			<groupId>com.taobao</groupId>
+			<artifactId>api.wms</artifactId>
+			<version>1.0</version>
+		</dependency>
+		
 		<!-- hibernate -->
 		<dependency>
 			<groupId>org.hibernate</groupId>

@@ -128,11 +128,14 @@
 			<artifactId>janino</artifactId>
 			<version>2.5.16</version>
 		</dependency>
-	    
+
+	
+
 		<!-- WEB begin -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
+			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-io</groupId>
@@ -184,6 +187,23 @@
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi</artifactId>
 			<version>3.7</version>
+		</dependency>
+
+		<!-- Report -->
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports</artifactId>
+			<version>4.6.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.lowagie</groupId>
+			<artifactId>iTextAsian</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sourceforge.barbecue</groupId>
+			<artifactId>barbecue</artifactId>
+			<version>1.5-beta1</version>
 		</dependency>
 
 		<!-- Common -->
@@ -360,7 +380,7 @@
 								<bannedDependencies>
 									<searchTransitive>true</searchTransitive>
 									<excludes>
-										<exclude>commons-logging</exclude>
+										<exclude>commons-logging*</exclude>
 										<exclude>aspectj:aspectj*</exclude>
 										<exclude>org.springframework:2.*</exclude>
 										<exclude>org.springframework:3.0.*</exclude>

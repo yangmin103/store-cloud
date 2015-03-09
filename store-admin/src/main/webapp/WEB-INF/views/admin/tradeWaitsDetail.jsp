@@ -7,11 +7,18 @@
 
 <html>
 <head>
-	<script type="text/javascript">
-	
+</head>
+<script type="text/javascript">
 	$(function() {
-		// 全选事件
-	   	$("#checkAll").click(function() {
+		$('#loadingDiv')
+		.hide();
+	});
+	
+	$(document).ready(function() {
+	
+		$('#loadingDiv').hide();
+		
+	   	$("#selectAll").live('click',function() {
 	   		if($(this).attr("checked") == "checked") {
 	   			$("input[name='trade_select[]']").each(function() {
 	            	$(this).attr("checked", true);
@@ -22,17 +29,21 @@
 	        	});
 	   		}
 		});
-	});
-	
-	$(document).ready(function() {
-		// 打开淘宝商品列表关联
+		
 		$("a[data-toggle=modal]").click(function(){
-			//postSelected();
+			var chk_value =[];  
+	  		$('input[name="trade_select[]"]:checked').each(function(){  
+	   		chk_value.push($(this).val());
+	  		});
+	  		if (chk_value.length==0) {
+	  			alert('未选择订单');
+	  			return;
+	  		}
 		});	
 		
 		$('#confirm').confirm({
-			'title' : '删除',
-			'message' : '确认删除该商品',
+			'title' : '确定',
+			'message' : '确定？',
 		});			
 	});
 	
@@ -41,47 +52,38 @@
 	   	var chk_value =[];  
 	  		$('input[name="trade_select[]"]:checked').each(function(){  
 	   		chk_value.push($(this).val());
-  		});  
+  		});
   		if (chk_value.length==0) {
-  			//alert('你还没有选择任何订单！');
-  		} else {
-  			// 分段发送至仓库
-  			var arr = new Array();
-  			var size=200;
-  			for(var i = 1, len = chk_value.length; i<= len; i++) {
-  				arr.push(chk_value[i-1]);
-  				if (i%size == 0 ) {
-  					auditTrade(arr, expressId);
-  					arr=[];
-  				} else if (i == len) {
-  					auditTrade(arr, expressId);
-  				}
- 			}
+  			alert('未选择订单');
+  			return;
   		}
+  		auditTrade(chk_value, expressId);
 	}
 
-	// 审核		
+	// 瀹℃��		
 	function auditTrade(tradeIds, express) {
+		$('#loadingDiv').show();
+		$('#myModal').hide();
  		var action = "${ctx}/trade/mkships?tradeIds=" + tradeIds + "&expressCompany=" + express;
-	   	$.post(action, function(data){
-			//$('#myModal').modal('hide')；
-		   	$("#body").html(data);
-	   	});
+ 		window.location.href=action;
+	   	//$.post(action, function(data){
+			//$('#myModal').modal('hide')锛�
+		//   	$("#body").html(data);
+	   	//});
 	}
 	
 	</script>
-</head>
 <body id="body">
 	
 	<table id="contentTable" class="table table-striped table-condensed"  >
 		<thead><tr>
-		<th>来源商铺</th>
-		<th>建单时间</th>
-		<th>交易订单号</th>
-		<th>收货地址</th>
-		<th>订购商品</th>
-		<th>备注</th>	
-		<th><input type="checkbox" id="checkAll" name="checkAll"/> 全选</th>
+		<th>商铺</th>
+		<th>支付日期</th>
+		<th>订单来源</th>
+		<th class="span3">寄送地址</th>
+		<th class="span4">购买商品</th>
+		<th class="span3">备注</th>	
+		<th><input type="checkbox" id="selectAll" name="selectAll"/> 全选</th>
 		</tr></thead>
 		<tbody>
 		<c:forEach items="${trades}" var="trade">
@@ -96,8 +98,8 @@
 				<td class="span3">${trade.itemTitles}
 				</td>			
 				<td>
-					买家：${trade.buyerMemo} ${trade.buyerMessage} <br>
-					卖家：${trade.sellerMemo}
+					买家留言：${trade.buyerMemo} ${trade.buyerMessage} <br>
+					卖家留言：${trade.sellerMemo}
 				</td>
 				<td>
 					<input type='checkbox' id='trade_select' name='trade_select[]' value='${trade.id}' />
@@ -111,19 +113,21 @@
 	<div class="row">
 	  	<div class="pull-right">
 	  		<a class="btn btn-primary" data-toggle="modal" href="#myModal" >批量审核</a>
-	  		<a id="btn_pick" href="#" class="btn btn-info">批量删除</a>&nbsp;&nbsp;&nbsp;&nbsp;
+	  		<!-- 
+	  		<a id="btn_pick" href="#" class="btn btn-info">��归��������</a>&nbsp;&nbsp;&nbsp;&nbsp;
+	  		 -->
 	  	</div>
 	</div>
 	
 	<div class="modal hide fade" id="myModal">
  		<div class="modal-header">
-    		<a class="close" data-dismiss="modal">×</a>
+    		<a class="close" data-dismiss="modal">批量审核</a>
     		<h3>批量审核订单</h3>
   		</div>
   		<div class="modal-body">
     		<p>
     		<span id="tids"></span>
-            运输公司：
+            快递公司选择
             <select name="expressCompany" id="expressCompany">
 		    	<option value="-1">未选择</option>
 		    	<c:forEach items="${expressCompanys}" var="e">
@@ -136,6 +140,10 @@
 			<a href="#" class="btn" data-dismiss="modal">关闭</a>
 	    	<a href="javascript:postSelected();" class="btn btn-primary">审核通过</a>
 	  	</div>
+	</div>
+	 
+	<div id="loadingDiv" class="hint hide">
+		<img src = "${ctx}/static/images/fetch.gif">
 	</div>
 	
 </body>

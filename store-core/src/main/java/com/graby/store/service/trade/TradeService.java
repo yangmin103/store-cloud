@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -36,9 +37,9 @@ import com.graby.store.service.item.ItemService;
 import com.graby.store.service.wms.ShipOrderService;
 import com.graby.store.util.DateUtils;
 import com.graby.store.util.EncryptUtil;
-import com.graby.store.web.top.TradeTrace;
 import com.graby.store.web.top.TopApi;
 import com.graby.store.web.top.TradeAdapter;
+import com.graby.store.web.top.TradeTrace;
 import com.taobao.api.ApiException;
 import com.taobao.api.domain.Refund;
 
@@ -90,6 +91,12 @@ public class TradeService {
 		return total;
 	}
 	
+	/**
+	 * 查询淘宝交易并分组
+	 * @param preDays
+	 * @return
+	 * @throws ApiException
+	 */
 	public GroupMap<String, Long> fetchWaitSendTopTradeTotalResults(int ...preDays) throws ApiException {
 		GroupMap<String, Long> results = new GroupMap<String, Long>();
 		List<Long> tids = fetchTopTradeIds(TopApi.TradeStatus.TRADE_WAIT_SELLER_SEND_GOODS, preDays);
@@ -181,14 +188,14 @@ public class TradeService {
 						order.setStockNum(-1);
 						useable = false;
 					} else {
-						long stockNum = inventoryService.getValue(1L, itemId, Accounts.CODE_SALEABLE);
-						order.setStockNum(stockNum);
 						Item item = itemServie.getItem(itemId);
 						order.setItem(item);
-						// 库存数量
-						if (stockNum <= 0) {
-							useable = false;
-						}
+//						long stockNum = inventoryService.getValue(1L, itemId, Accounts.CODE_SALEABLE);
+//						order.setStockNum(stockNum);
+//						// 库存数量
+//						if (stockNum <= 0) {
+//							useable = false;
+//						}
 					}
 				}
 				groupResults.put(useable? "useable" : "failed", trade);
@@ -238,6 +245,16 @@ public class TradeService {
 	 */
 	public List<Trade> findWaitAuditTradesBy(Map<String, Object> params) {
 		return tradeDao.findWaitAuditTradesBy(params);
+	}
+	
+	/**
+	 * 查询可合并订单
+	 * @param map
+	 * @return
+	 */
+	public List<Trade> findSplitedTrades() {
+		List<Trade> result = tradeDao.findSplitedTrades();
+		return result;
 	}
 	
 	/**
@@ -389,9 +406,9 @@ public class TradeService {
 	 */
 	@Transactional(readOnly = false)
 	public Trade createTrade(Trade trade, Long tid) {
-		// 检查是否已关联
-		Long tradeId =getRelatedTradeId(tid);
-		if (tradeId == null) {
+		// 检查是否已关联 tip:支持淘宝单号对应多个系统订单（订单拆分）
+//		Long tradeId =getRelatedTradeId(tid);
+//		if (tradeId == null) {
 			// 状态等待物流通审核
 			trade.setStatus(Trade.Status.TRADE_WAIT_CENTRO_AUDIT);
 			tradeJpaDao.save(trade);
@@ -409,7 +426,7 @@ public class TradeService {
 			}
 			// 创建关联关系
 			mappingTrade(tid, trade.getId());
-		}
+//		}
 		return trade;
 	}
 	
@@ -544,6 +561,58 @@ public class TradeService {
 		tradeDao.deleteTradeMapping(tradeId);
 		tradeDao.deleteTradeOrder(tradeId);
 		tradeDao.deleteTrade(tradeId);
+	}
+	
+	public void reset(long tradeId) {
+		tradeDao.deleteShipOrderDetail(tradeId);
+		tradeDao.deleteShipOrder(tradeId);
+		tradeDao.deleteTradeMapping(tradeId);
+		updateTradeStatus(tradeId, Trade.Status.TRADE_WAIT_CENTRO_AUDIT);
+	}
+	
+	/**
+	 * 交易订单拆分
+	 * @param tradeId
+	 * @param orderId
+	 */
+	public void splitTrade(Long tradeId, Long orderId) {
+		Trade trade = getTrade(tradeId);
+		StringBuffer buf = new StringBuffer();
+		// 设置订单拆分编码
+		buf.append(trade.getBuyerNick()).append(trade.getReceiverState()).append(trade.getReceiverCity());
+		buf.append(trade.getReceiverDistrict() == null ? "": trade.getReceiverDistrict());
+		buf.append(trade.getReceiverMobile()).append(trade.getReceiverName());
+		String mergehash = EncryptUtil.md5(buf.toString());
+		tradeDao.updateTradeMergeHash(trade.getId(), mergehash);
+		
+		// 拆分订单
+		Long tid = trade.getTid();
+		List<TradeOrder> splited = new ArrayList<TradeOrder>();
+		List<TradeOrder> orders = trade.getOrders();
+		for (TradeOrder order : orders) {
+			if (order.getId().equals(orderId)) {
+				splited.add(order);
+				break;
+			}
+		}
+		trade.setId(null);
+		trade.setOrders(splited);
+		trade.setMergeHash(mergehash);
+		this.createTrade(trade, tid);
+	}
+	
+	public void mergeTrade(Long[] tradeIds) {
+		Trade main = getTrade(tradeIds[0]);
+		Long tid = main.getTid();
+		for (int i = 1; i < tradeIds.length; i++) {
+			Trade sub = getTrade(tradeIds[i]);
+			main.getOrders().addAll(sub.getOrders());
+		}
+		for (Long tradeId : tradeIds) {
+			this.deleteTrade(tradeId);
+		}
+		main.setId(null);
+		this.createTrade(main, tid);
 	}
 	
 

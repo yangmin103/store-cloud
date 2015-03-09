@@ -82,7 +82,7 @@
 		</tbody>
 	</table>
 	
-	<tags:pagination page="${orders}" paginationSize="15"/>
+	<tags:pagination page="${orders}" paginationSize="10"/>
 	<a class="btn" href="${ctx}/store/entry/create">新建入库单</a>
 </body>
 </html>

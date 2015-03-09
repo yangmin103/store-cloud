@@ -3,6 +3,8 @@ package com.graby.store.admin.util;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
+
 import com.graby.store.base.GroupMap;
 
 public class CityJson {
@@ -10,6 +12,10 @@ public class CityJson {
 	private GroupMap<String, String> stateMap = new GroupMap<String, String>();
 	
 	public void putCity(String state, String city) {
+		List<String> citys = stateMap.getList(state);
+		if (CollectionUtils.isNotEmpty(citys) && citys.contains(city)) {
+			return;
+		}
 		stateMap.put(state, city);
 	}
 	
@@ -58,6 +64,7 @@ public class CityJson {
 		m.putCity("湖南省", "湘潭市");
 		m.putCity("湖北省", "荆州市");
 		m.putCity("湖北省", "武汉市");
+		m.putCity("湖南省", "长沙市");
 		System.out.println(m.getJson());
 	}
 }

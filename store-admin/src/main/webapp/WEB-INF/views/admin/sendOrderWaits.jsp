@@ -26,7 +26,8 @@
 		<th>创建日期</th>
 		<th>商铺名称</th>
 		<th>出库单号</th>
-		<th>处理</th>
+		<th>电子面单</th>
+		<th>传统面单处理</th>
 		</tr></thead>
 		<tbody>
 		<c:forEach items="${orders}" var="order">
@@ -34,7 +35,8 @@
 				<td><fmt:formatDate value="${order.createDate}" type="date" pattern="yyyy-MM-dd HH:mm"/></td>
 				<td>${order.createUser.shopName}</td>
 				<td>${order.orderno}</td>
-				<td>手工<a href="${ctx}/trade/send/do/${order.id}" rel="tooltip" title="手工设置已发货运单号。（建议使用批量打单系统）">设置</a>运单号</td>
+				<td>${order.expressCompany} : ${order.expressOrderno}</td>
+				<td><a href="${ctx}/trade/send/do/${order.id}" rel="tooltip" title="手工设置已发货运单号。（建议使用批量打单系统）">设置运单号</a></td>
 			</tr>
 		</c:forEach>
 		</tbody>
