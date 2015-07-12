@@ -1,26 +1,18 @@
 package com.graby.store.web.top;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.annotation.PostConstruct;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.graby.store.base.ServiceException;
 import com.graby.store.web.auth.ShiroContextUtils;
 import com.taobao.api.ApiException;
 import com.taobao.api.DefaultTaobaoClient;
 import com.taobao.api.TaobaoResponse;
-import com.taobao.api.domain.PackageItem;
 import com.taobao.api.domain.TradeOrderInfo;
 import com.taobao.api.domain.WaybillAddress;
-import com.taobao.api.domain.WaybillApplyNewInfo;
 import com.taobao.api.domain.WaybillApplyNewRequest;
 import com.taobao.api.internal.util.json.JSONWriter;
 import com.taobao.api.request.WlbWaybillIGetRequest;
