@@ -8,6 +8,7 @@
 		<pattern>/top_oauth*</pattern>
 		<pattern>/item/mapping*</pattern>
 		<pattern>/login*</pattern>
+		<pattern>/qm_index*</pattern>
 		<pattern>/trade/waits/fetch*</pattern>
 		<pattern>**/ajax*</pattern>
 	</excludes>

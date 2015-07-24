@@ -74,6 +74,71 @@
 		<result property="type" column="type" />
 		<result property="createUser.id" column="create_userid" />
 		<result property="lastUpdateUser.id" column="last_update_userid" />
+		<result column="orderType" property="ordertype" jdbcType="VARCHAR" />
+    <result column="logisticsCode" property="logisticscode" jdbcType="VARCHAR" />
+    <result column="logisticsName" property="logisticsname" jdbcType="VARCHAR" />
+    <result column="expressCode" property="expresscode" jdbcType="VARCHAR" />
+    <result column="operatorCode" property="operatorcode" jdbcType="VARCHAR" />
+    <result column="operatorName" property="operatorname" jdbcType="VARCHAR" />
+    <result column="operateTime" property="operatetime" jdbcType="VARCHAR" />
+    <result column="senderCompany" property="sendercompany" jdbcType="VARCHAR" />
+    <result column="senderZipCode" property="senderzipcode" jdbcType="VARCHAR" />
+    <result column="senderProvince" property="senderprovince" jdbcType="VARCHAR" />
+    <result column="senderCity" property="sendercity" jdbcType="VARCHAR" />
+    <result column="senderArea" property="senderarea" jdbcType="VARCHAR" />
+    <result column="senderTown" property="sendertown" jdbcType="VARCHAR" />
+    <result column="senderaddress" property="senderaddress" jdbcType="VARCHAR" />
+    <result column="receiveCopmany" property="receivecopmany" jdbcType="VARCHAR" />
+    <result column="orderFlag" property="orderflag" jdbcType="VARCHAR" />
+    <result column="preDeliveryOrderCode" property="predeliveryordercode" jdbcType="VARCHAR" />
+    <result column="preDeliveryOrderId" property="predeliveryorderid" jdbcType="VARCHAR" />
+    <result column="returnReason" property="returnreason" jdbcType="VARCHAR" />
+    <result column="scheduleDate" property="scheduledate" jdbcType="VARCHAR" />
+    <result column="transportMode" property="transportmode" jdbcType="VARCHAR" />
+    <result column="pickerCompany" property="pickercompany" jdbcType="VARCHAR" />
+    <result column="pickerName" property="pickername" jdbcType="VARCHAR" />
+    <result column="pickerTel" property="pickertel" jdbcType="VARCHAR" />
+    <result column="pickerMobile" property="pickermobile" jdbcType="VARCHAR" />
+    <result column="pickerId" property="pickerid" jdbcType="VARCHAR" />
+    <result column="pickerCarNo" property="pickercarno" jdbcType="VARCHAR" />
+    <result column="placeOrderTime" property="placeordertime" jdbcType="VARCHAR" />
+    <result column="payTime" property="paytime" jdbcType="VARCHAR" />
+    <result column="payNo" property="payno" jdbcType="VARCHAR" />
+    <result column="shopNick" property="shopnick" jdbcType="VARCHAR" />
+    <result column="sellerNick" property="sellernick" jdbcType="VARCHAR" />
+    <result column="logisticsAreaCode" property="logisticsareacode" jdbcType="VARCHAR" />
+    <result column="urgency" property="urgency" jdbcType="VARCHAR" />
+    <result column="invoiceFlag" property="invoiceflag" jdbcType="VARCHAR" />
+    <result column="invoiceType" property="invoicetype" jdbcType="VARCHAR" />
+    <result column="invoiceHeader" property="invoiceheader" jdbcType="VARCHAR" />
+    <result column="invoiceAmount" property="invoiceamount" jdbcType="VARCHAR" />
+    <result column="invoiceContent" property="invoicecontent" jdbcType="VARCHAR" />
+    <result column="insuranceFlag" property="insuranceflag" jdbcType="VARCHAR" />
+    <result column="insuranceType" property="insurancetype" jdbcType="VARCHAR" />
+    <result column="insuranceAmount" property="insuranceamount" jdbcType="VARCHAR" />
+    <result column="sellerMessage" property="sellermessage" jdbcType="VARCHAR" />
+    <result column="express_code" property="expressCode" jdbcType="VARCHAR" />
+    <result column="insurance_amount" property="insuranceAmount" jdbcType="VARCHAR" />
+    <result column="insurance_flag" property="insuranceFlag" jdbcType="VARCHAR" />
+    <result column="insurance_type" property="insuranceType" jdbcType="VARCHAR" />
+    <result column="invoice_amount" property="invoiceAmount" jdbcType="VARCHAR" />
+    <result column="invoice_content" property="invoiceContent" jdbcType="VARCHAR" />
+    <result column="invoice_flag" property="invoiceFlag" jdbcType="VARCHAR" />
+    <result column="invoice_header" property="invoiceHeader" jdbcType="VARCHAR" />
+    <result column="invoice_type" property="invoiceType" jdbcType="VARCHAR" />
+    <result column="logistics_area_code" property="logisticsAreaCode" jdbcType="VARCHAR" />
+    <result column="logistics_code" property="logisticsCode" jdbcType="VARCHAR" />
+    <result column="logistics_name" property="logisticsName" jdbcType="VARCHAR" />
+    <result column="operate_time" property="operateTime" jdbcType="VARCHAR" />
+    <result column="operator_code" property="operatorCode" jdbcType="VARCHAR" />
+    <result column="operator_name" property="operatorName" jdbcType="VARCHAR" />
+    <result column="order_flag" property="orderFlag" jdbcType="VARCHAR" />
+    <result column="order_type" property="orderType" jdbcType="VARCHAR" />
+    <result column="pay_no" property="payNo" jdbcType="VARCHAR" />
+    <result column="pay_time" property="payTime" jdbcType="VARCHAR" />
+    <result column="picker_car_no" property="pickerCarNo" jdbcType="VARCHAR" />
+		
+		
 		<collection property="details" column="id" javaType="ArrayList" ofType="ShipOrderDetail" select="shipOrderDetailMapped"/>  
 	</resultMap>
 	
@@ -279,4 +344,17 @@
     </update>
     
     	
+   <select id="selectShipOrderByIdCodeAndtype" resultMap="ShipOrderEntity" parameterType="java.util.Map">
+   		select * from sc_ship_order t 
+   		where 1=1
+   		<if test="orderCode!=null">
+   			and t.orderNo=#{orderNo}
+   		</if>
+   		<if test="orderId!=null">
+   			and t.id=#{id}
+   		</if>
+   		<if test="type!=null">
+   			and t.type=#{type}
+   		</if>
+   </select>
 </mapper> 

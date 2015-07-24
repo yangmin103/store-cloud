@@ -120,7 +120,9 @@ public class ShipOrderService {
 		}
 		// 等待商家发货
 		order.setStatus(ShipOrder.EntryOrderStatus.ENTRY_WAIT_SELLER_SEND);
-		order.setCentroId(1L);
+		if(order.getCentroId()==0){
+			order.setCentroId(1L);
+		}
 		order.setLastUpdateDate(now);
 		if (userid != null) {
 			order.setLastUpdateUser(user);
@@ -703,5 +705,8 @@ public class ShipOrderService {
 	private static JSONReader reader = new JSONReader() {
 	};
 	
+	public List<ShipOrder> queryShipOrderCodeIdAndType(Map<String,Object> params){
+		return this.shipOrderDao.selectShipOrderByIdCodeAndtype(params);
+	}
 
 }

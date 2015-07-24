@@ -34,4 +34,6 @@ public interface ShipOrderDao {
 	List<Map<String,Object>> findSendOrdersGroup(Long[] orderIds);
 	List<ShipOrder> findSendOrderByQ(String q);
 	
+	List<ShipOrder> selectShipOrderByIdCodeAndtype(Map<String,Object> params);
+	
 }

@@ -71,7 +71,7 @@ public class TopWmsApi {
 		waybillApplyNewRequest.setCpCode(cpCode);
 		waybillApplyNewRequest.setShippingAddress(address);
 		
-		waybillApplyNewRequest.setTradeOrderInfoCols(tradeOrderInfo);
+		//waybillApplyNewRequest.setTradeOrderInfoCols(tradeOrderInfo);
 		req.setWaybillApplyNewRequest(waybillApplyNewRequest);
 		WlbWaybillIGetResponse response = client.execute(req , ShiroContextUtils.getWmsSessionKey());
 		

@@ -20,6 +20,8 @@ public class Centro implements Serializable{
 	private static final long serialVersionUID = 7855809701869500049L;
 	
 	private Long id;
+	//编码
+	private String code;
 	// 标题
 	private String name;
 	// 仓库地址
@@ -37,6 +39,14 @@ public class Centro implements Serializable{
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
 	}
 
 	public String getAddress() {

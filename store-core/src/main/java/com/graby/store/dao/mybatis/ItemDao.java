@@ -12,6 +12,8 @@ public interface ItemDao {
 	
 	Item get(Long id);
 	
+	Item getItemByCode(String code);
+	
 	// 删除
 	void delete(Long id);
 	

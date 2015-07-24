@@ -56,6 +56,10 @@ public class ItemService {
 		return itemDao.get(id);
 	}
 	
+	public Item getItemByCode(String code){
+		return this.itemDao.getItemByCode(code);
+	}
+	
 	/**
 	 * 获取用户商品
 	 * @param userId

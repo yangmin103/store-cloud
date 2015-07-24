@@ -27,6 +27,18 @@ public class ShipOrderDetail implements Serializable{
 	
 	private String skuPropertiesName;
 	
+	//接口加入新字段
+	private String orderLineNo;//单据行号
+	
+	private String ownerCode;//货主编号
+	
+	private String inventoryType;//库存类型 库存类型，string (50) , ZP=正品, CC=残次,JS=机损, XS= 箱损，默认为ZP
+	
+	private String tradeOrderNo;//交易平台订单号
+	private String subTradeOrderNo;//交易平台子订单号
+	
+	private String actualPrice;//实际成交价
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	public Long getId() {
@@ -82,6 +94,54 @@ public class ShipOrderDetail implements Serializable{
 
 	public void setSkuPropertiesName(String skuPropertiesName) {
 		this.skuPropertiesName = skuPropertiesName;
+	}
+
+	public String getOrderLineNo() {
+		return orderLineNo;
+	}
+
+	public void setOrderLineNo(String orderLineNo) {
+		this.orderLineNo = orderLineNo;
+	}
+
+	public String getOwnerCode() {
+		return ownerCode;
+	}
+
+	public void setOwnerCode(String ownerCode) {
+		this.ownerCode = ownerCode;
+	}
+
+	public String getInventoryType() {
+		return inventoryType;
+	}
+
+	public void setInventoryType(String inventoryType) {
+		this.inventoryType = inventoryType;
+	}
+
+	public String getTradeOrderNo() {
+		return tradeOrderNo;
+	}
+
+	public void setTradeOrderNo(String tradeOrderNo) {
+		this.tradeOrderNo = tradeOrderNo;
+	}
+
+	public String getSubTradeOrderNo() {
+		return subTradeOrderNo;
+	}
+
+	public void setSubTradeOrderNo(String subTradeOrderNo) {
+		this.subTradeOrderNo = subTradeOrderNo;
+	}
+
+	public String getActualPrice() {
+		return actualPrice;
+	}
+
+	public void setActualPrice(String actualPrice) {
+		this.actualPrice = actualPrice;
 	}
 	
 }

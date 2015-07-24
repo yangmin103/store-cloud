@@ -25,6 +25,7 @@
 			<value>
 				/*.html = anon
 				/top_auth = anon
+				/qm_index = anon
 				/top_oauth = anon
 				/favicon.ico = anon
 				/static/** = anon

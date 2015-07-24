@@ -36,9 +36,15 @@ public class ShipOrder implements Serializable{
 
 	/** 入库单  */
 	public static final String TYPE_ENTRY = "entry";
+	/**
+	 * 退货入库单
+	 */
+	public static final String TYPE_ENTRY_RETURN="return";
 	
 	/** 出库单 */
 	public static final String TYPE_SEND = "send";
+	/**发货单	*/
+	public static final String TYPE_DELIVER="deliver";
 	
 
 	/* ------------- 入库单状态 -------------*/
@@ -187,7 +193,72 @@ public class ShipOrder implements Serializable{
 	
 	// 发货明细字符串
 	private String items;
+	
+	/*奇门接口加入字段*/
+	//单据业务类型
+	private String orderType;
+	//物流公司编号
+	private String logisticsCode;
+	private String logisticsName;//物流公司 名称
+	private String expressCode;//快递单号
+	private String operatorCode;//操作人员编号
+	private String operatorName;//操作人姓名
+	private String operateTime;//操作时间
+	//发货方信息
+	private String senderCompany;
+	private String senderZipCode;
+	private String senderProvince;
+	private String senderCity;
+	private String senderArea;
+	private String senderTown;
+	private String senderaddress;
+	//
+	private String receiveCopmany;
+	//退货入库单信息
+	/**
+	 * 比如VISIT^ SELLER_AFFORD^SYNC_RETURN_BILL 等, 中间用“^”来隔开 订单标记list (所有字母全部大写)
+	 *  ： VISIT=上门；SELLER_AFFORD=是否卖家承担运费 (默认是) ；SYNC_RETURN_BILL=同时退回发票；
+	 */
+	private String orderFlag;//订单标记列表
+	/**
+	 * 原出库单号（ERP分配）
+	 */
+	private String preDeliveryOrderCode;
+	/**
+	 * 原出库单号（WMS分配）
+	 */
+	private String preDeliveryOrderId;
+	
+	private String returnReason;//退货原因
+	
+	private String scheduleDate;//要求出库时间
+	
+	private String transportMode;//提货方式（到仓自提，快递，干线物流）
+	//出库单提货人信息
+	private String pickerCompany;
+	private String pickerName;
+	private String pickerTel;
+	private String pickerMobile;
+	private String pickerId;//证件号
+	private String pickerCarNo;//车牌号码
 
+	private String placeOrderTime;//前台订单 (店铺订单) 创建时间 (下单时间) 
+	private String payTime;//订单支付时间,
+	private String payNo;//支付平台交易号,
+	private String shopNick;//店铺名称,
+	private String sellerNick;//卖家名称
+	private String logisticsAreaCode;//快递区域编码, 大头笔信息
+	private String urgency;//是否紧急, Y/N, 默认为N
+	private String invoiceFlag;//是否需要发票, Y/N, 默认为N
+	private String invoiceType;//发票类型
+	private String invoiceHeader;//发票抬头
+	private String invoiceAmount;
+	private String invoiceContent;
+	private String insuranceFlag;//是否需要保险
+	private String insuranceType;
+	private String insuranceAmount;
+	private String sellerMessage;
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	public Long getId() {
@@ -495,7 +566,349 @@ public class ShipOrder implements Serializable{
 	public void setSellerPhone(String sellerPhone) {
 		this.sellerPhone = sellerPhone;
 	}
-	
-	
 
+	public String getOrderType() {
+		return orderType;
+	}
+
+	public void setOrderType(String orderType) {
+		this.orderType = orderType;
+	}
+
+	public String getLogisticsCode() {
+		return logisticsCode;
+	}
+
+	public void setLogisticsCode(String logisticsCode) {
+		this.logisticsCode = logisticsCode;
+	}
+
+	public String getLogisticsName() {
+		return logisticsName;
+	}
+
+	public void setLogisticsName(String logisticsName) {
+		this.logisticsName = logisticsName;
+	}
+
+	public String getExpressCode() {
+		return expressCode;
+	}
+
+	public void setExpressCode(String expressCode) {
+		this.expressCode = expressCode;
+	}
+
+	public String getOperatorCode() {
+		return operatorCode;
+	}
+
+	public void setOperatorCode(String operatorCode) {
+		this.operatorCode = operatorCode;
+	}
+
+	public String getOperatorName() {
+		return operatorName;
+	}
+
+	public void setOperatorName(String operatorName) {
+		this.operatorName = operatorName;
+	}
+
+	public String getOperateTime() {
+		return operateTime;
+	}
+
+	public void setOperateTime(String operateTime) {
+		this.operateTime = operateTime;
+	}
+
+	public String getSenderCompany() {
+		return senderCompany;
+	}
+
+	public void setSenderCompany(String senderCompany) {
+		this.senderCompany = senderCompany;
+	}
+
+	public String getSenderZipCode() {
+		return senderZipCode;
+	}
+
+	public void setSenderZipCode(String senderZipCode) {
+		this.senderZipCode = senderZipCode;
+	}
+
+	public String getSenderCity() {
+		return senderCity;
+	}
+
+	public void setSenderCity(String senderCity) {
+		this.senderCity = senderCity;
+	}
+
+	public String getSenderArea() {
+		return senderArea;
+	}
+
+	public void setSenderArea(String senderArea) {
+		this.senderArea = senderArea;
+	}
+
+	public String getSenderTown() {
+		return senderTown;
+	}
+
+	public void setSenderTown(String senderTown) {
+		this.senderTown = senderTown;
+	}
+
+	public String getSenderaddress() {
+		return senderaddress;
+	}
+
+	public void setSenderaddress(String senderaddress) {
+		this.senderaddress = senderaddress;
+	}
+
+	public String getSenderProvince() {
+		return senderProvince;
+	}
+
+	public void setSenderProvince(String senderProvince) {
+		this.senderProvince = senderProvince;
+	}
+
+	public String getReceiveCopmany() {
+		return receiveCopmany;
+	}
+
+	public void setReceiveCopmany(String receiveCopmany) {
+		this.receiveCopmany = receiveCopmany;
+	}
+
+	public String getOrderFlag() {
+		return orderFlag;
+	}
+
+	public void setOrderFlag(String orderFlag) {
+		this.orderFlag = orderFlag;
+	}
+
+	public String getPreDeliveryOrderCode() {
+		return preDeliveryOrderCode;
+	}
+
+	public void setPreDeliveryOrderCode(String preDeliveryOrderCode) {
+		this.preDeliveryOrderCode = preDeliveryOrderCode;
+	}
+
+	public String getPreDeliveryOrderId() {
+		return preDeliveryOrderId;
+	}
+
+	public void setPreDeliveryOrderId(String preDeliveryOrderId) {
+		this.preDeliveryOrderId = preDeliveryOrderId;
+	}
+
+	public String getReturnReason() {
+		return returnReason;
+	}
+
+	public void setReturnReason(String returnReason) {
+		this.returnReason = returnReason;
+	}
+
+	public String getScheduleDate() {
+		return scheduleDate;
+	}
+
+	public void setScheduleDate(String scheduleDate) {
+		this.scheduleDate = scheduleDate;
+	}
+
+	public String getTransportMode() {
+		return transportMode;
+	}
+
+	public void setTransportMode(String transportMode) {
+		this.transportMode = transportMode;
+	}
+
+	public String getPickerCompany() {
+		return pickerCompany;
+	}
+
+	public void setPickerCompany(String pickerCompany) {
+		this.pickerCompany = pickerCompany;
+	}
+
+	public String getPickerName() {
+		return pickerName;
+	}
+
+	public void setPickerName(String pickerName) {
+		this.pickerName = pickerName;
+	}
+
+	public String getPickerTel() {
+		return pickerTel;
+	}
+
+	public void setPickerTel(String pickerTel) {
+		this.pickerTel = pickerTel;
+	}
+
+	public String getPickerMobile() {
+		return pickerMobile;
+	}
+
+	public void setPickerMobile(String pickerMobile) {
+		this.pickerMobile = pickerMobile;
+	}
+
+	public String getPickerId() {
+		return pickerId;
+	}
+
+	public void setPickerId(String pickerId) {
+		this.pickerId = pickerId;
+	}
+
+	public String getPickerCarNo() {
+		return pickerCarNo;
+	}
+
+	public void setPickerCarNo(String pickerCarNo) {
+		this.pickerCarNo = pickerCarNo;
+	}
+
+	public String getPlaceOrderTime() {
+		return placeOrderTime;
+	}
+
+	public void setPlaceOrderTime(String placeOrderTime) {
+		this.placeOrderTime = placeOrderTime;
+	}
+
+	public String getPayTime() {
+		return payTime;
+	}
+
+	public void setPayTime(String payTime) {
+		this.payTime = payTime;
+	}
+
+	public String getPayNo() {
+		return payNo;
+	}
+
+	public void setPayNo(String payNo) {
+		this.payNo = payNo;
+	}
+
+	public String getShopNick() {
+		return shopNick;
+	}
+
+	public void setShopNick(String shopNick) {
+		this.shopNick = shopNick;
+	}
+
+	public String getSellerNick() {
+		return sellerNick;
+	}
+
+	public void setSellerNick(String sellerNick) {
+		this.sellerNick = sellerNick;
+	}
+
+	public String getLogisticsAreaCode() {
+		return logisticsAreaCode;
+	}
+
+	public void setLogisticsAreaCode(String logisticsAreaCode) {
+		this.logisticsAreaCode = logisticsAreaCode;
+	}
+
+	public String getUrgency() {
+		return urgency;
+	}
+
+	public void setUrgency(String urgency) {
+		this.urgency = urgency;
+	}
+
+	public String getInvoiceFlag() {
+		return invoiceFlag;
+	}
+
+	public void setInvoiceFlag(String invoiceFlag) {
+		this.invoiceFlag = invoiceFlag;
+	}
+
+	public String getInvoiceType() {
+		return invoiceType;
+	}
+
+	public void setInvoiceType(String invoiceType) {
+		this.invoiceType = invoiceType;
+	}
+
+	public String getInvoiceHeader() {
+		return invoiceHeader;
+	}
+
+	public void setInvoiceHeader(String invoiceHeader) {
+		this.invoiceHeader = invoiceHeader;
+	}
+
+	public String getInvoiceAmount() {
+		return invoiceAmount;
+	}
+
+	public void setInvoiceAmount(String invoiceAmount) {
+		this.invoiceAmount = invoiceAmount;
+	}
+
+	public String getInvoiceContent() {
+		return invoiceContent;
+	}
+
+	public void setInvoiceContent(String invoiceContent) {
+		this.invoiceContent = invoiceContent;
+	}
+
+	public String getInsuranceFlag() {
+		return insuranceFlag;
+	}
+
+	public void setInsuranceFlag(String insuranceFlag) {
+		this.insuranceFlag = insuranceFlag;
+	}
+
+	public String getInsuranceType() {
+		return insuranceType;
+	}
+
+	public void setInsuranceType(String insuranceType) {
+		this.insuranceType = insuranceType;
+	}
+
+	public String getInsuranceAmount() {
+		return insuranceAmount;
+	}
+
+	public void setInsuranceAmount(String insuranceAmount) {
+		this.insuranceAmount = insuranceAmount;
+	}
+
+	public String getSellerMessage() {
+		return sellerMessage;
+	}
+
+	public void setSellerMessage(String sellerMessage) {
+		this.sellerMessage = sellerMessage;
+	}
+	
 }

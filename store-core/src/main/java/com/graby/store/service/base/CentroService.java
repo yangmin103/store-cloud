@@ -20,4 +20,12 @@ public class CentroService {
 		return centroDao.findCentros();
 	}
 	
+	public Centro findCentroById(String id){
+		return centroDao.findCentroById(id);
+	}
+	
+	public Centro findCentroByCode(String code){
+		return this.centroDao.findCentroByCode(code);
+	}
+	
 }

@@ -14,4 +14,8 @@ public interface CentroDao {
 	 */
 	List<Centro> findCentros();
 	
+	Centro findCentroById(String id);
+	
+	Centro findCentroByCode(String code);
+	
 }
