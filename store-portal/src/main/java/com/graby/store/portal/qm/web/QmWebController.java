@@ -52,6 +52,7 @@ public class QmWebController {
 		}
 		String xmlStr = requestStr.toString();
 		String msg = "";
+		String resultStr="";
 		try {
 			if (method == null || method.length() == 0) {
 				resultMap.put("flag", "failure");
@@ -60,28 +61,28 @@ public class QmWebController {
 				System.err.println(resultXml);
 				return resultXml;
 			}
-			if (method.equals("singleitem.synchronize")) {// 商品同步
+			if (method.equals("singleitem.synchronize")) {// 商品同步 OK
 				msg = this.qmService.itemSync(xmlStr);
 			} else if (method.equals("combineitem.synchronize")) {// 组合商品
 				msg = this.qmService.combineitem(xmlStr);
-			} else if (method.equals("entryorder.create")) {// 入库单创建
+			} else if (method.equals("entryorder.create")) {// 入库单创建 OK
 				msg = this.qmService.entryorder(xmlStr);
-			} else if (method.equals("returnorder.create")) {// 退货入库单
+			} else if (method.equals("returnorder.create")) {// 退货入库单 ok
 				msg = this.qmService.returnorder(xmlStr);
-			} else if (method.equals("stockout.create")) {// 出库单创建
+			} else if (method.equals("stockout.create")) {// 出库单创建 OK
 				msg = this.qmService.stockout(xmlStr);
-			} else if (method.equals("deliveryorder.create")) {// 发货单创建
+			} else if (method.equals("deliveryorder.create")) {// 发货单创建 OK
 				msg = this.qmService.deliveryorder(xmlStr);
 			} else if (method.equals("deliveryorder.query")) {// 发货单查询接口
-				this.qmService.deliveryQuery(xmlStr);
+				resultStr=this.qmService.deliveryQuery(xmlStr);
 			} else if (method.equals("orderprocess.query")) {// 订单查询接口
-
+				resultStr=this.qmService.orderprocessQuery(xmlStr);
 			}else if(method.equals("order.cancel")){//单据取消接口
 				msg=this.qmService.orderCancel(xmlStr);
 			}else if(method.equals("inventory.query")){//库存查询接口
-				this.qmService.inventoryQuery(xmlStr);
-			}else if(method.equals("storeprocess.create")){//仓内加工单创建接口
-				this.qmService.storeprocessCreate(xmlStr);
+				resultStr=this.qmService.inventoryQuery(xmlStr);
+			}else if(method.equals("storeprocess.create")){//仓内加工单创建接口 OK
+				msg=this.qmService.storeprocessCreate(xmlStr);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -90,11 +91,23 @@ public class QmWebController {
 		if (msg != null && msg.length() > 0) {
 			resultMap.put("flag", "failure");
 			resultMap.put("message", msg);
+			resultMap.put("itemId", "");
+			String resultXml = XmlUtil.converterPayPalm(resultMap, XmlEnum.RESPONSE);
+			System.err.println(resultXml);
+			return resultXml;
+		}else{
+			//msg为空，调用的为查询接口
+			if(resultStr!=null && resultStr.length()>0){
+				return resultStr;
+			}else{
+				resultMap.put("flag", "failure");
+				resultMap.put("message", "");
+				resultMap.put("itemId", "");
+				String resultXml = XmlUtil.converterPayPalm(resultMap, XmlEnum.RESPONSE);
+				return resultXml;
+			}
 		}
-		resultMap.put("itemId", "");
-		String resultXml = XmlUtil.converterPayPalm(resultMap, XmlEnum.RESPONSE);
-		System.err.println(resultXml);
-		return resultXml;
+		
 	}
 
 }

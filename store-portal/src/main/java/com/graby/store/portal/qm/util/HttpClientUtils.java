@@ -14,8 +14,8 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.params.ClientPNames;
 import org.apache.http.client.params.CookiePolicy;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
@@ -54,7 +54,7 @@ public class HttpClientUtils {
 	 * @param param
 	 * @return
 	 */
-	public static String httpPost(String url, Map<String, Object> param) {
+	public static String httpPost(String url, String xmlStr) {
 		logger.info("httpPost URL [" + url + "] start ");
 		DefaultHttpClient httpclient = null;
 		HttpPost httpPost = null;
@@ -74,7 +74,7 @@ public class HttpClientUtils {
 			}
 			List<NameValuePair> nvps = new ArrayList<NameValuePair>();
 			// 传入各种参数
-			if (null != param) {
+		/*	if (null != param) {
 				for (Entry<String, Object> set : param.entrySet()) {
 					String key = set.getKey();
 					String value = set.getValue() == null ? "" : set.getValue()
@@ -82,9 +82,12 @@ public class HttpClientUtils {
 					nvps.add(new BasicNameValuePair(key, value));
 					suf.append(" [" + key + "-" + value + "] ");
 				}
-			}
+			}*/
+			//设置参数传入
+			StringEntity bodyStr=new StringEntity(xmlStr,HTTP.UTF_8);
+			httpPost.setEntity(bodyStr);
 			logger.info("param " + suf.toString());
-			httpPost.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
+			//httpPost.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
 			// 设置连接超时时间
 			HttpConnectionParams.setConnectionTimeout(httpclient.getParams(),3600
 					);
@@ -105,6 +108,9 @@ public class HttpClientUtils {
 					logger.error("httpPost URL [" + url
 							+ "],httpEntity is null.");
 				}
+				/**
+				 * 正常返回结果集
+				 */
 				return result;
 			}
 		} catch (Exception e) {

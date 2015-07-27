@@ -45,6 +45,7 @@
 		 where centro_id=#{0} and item_id=#{1} and account=#{2}
 	</select>
 	 
+	
 	<!-- 
 	<select id="statByUser" resultType="map">
 	<![CDATA[ 

@@ -8,18 +8,16 @@ package com.graby.store.portal.qm.service;
 public interface QmSyncQueryService {
 	
 	/**
-	 * 发货单查询接口
+	 * 提交奇门方法
 	 * @param xmlStr
+	 * @param method
 	 * @return
-	 * @throws Exception
 	 */
-	public String deliveryorderQuery(String xmlStr) throws Exception;
-	
+	public String submitQm(String xmlStr,String method);
 	/**
-	 * 订单流水查询接口
-	 * @param xmlStr
+	 * 发货单缺货通知接口
+	 * @param jsonStr
 	 * @return
-	 * @throws Exception
 	 */
-	public String orderprocessQuery(String xmlStr) throws Exception;
+	public String itemlackReport(String jsonStr);
 }

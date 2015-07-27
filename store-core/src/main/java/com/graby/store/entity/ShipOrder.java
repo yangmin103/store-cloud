@@ -195,6 +195,12 @@ public class ShipOrder implements Serializable{
 	private String items;
 	
 	/*奇门接口加入字段*/
+	private int cancelStatus;//单据取消状态
+	private int delStatus;//单据删除状态
+	
+
+	
+
 	//单据业务类型
 	private String orderType;
 	//物流公司编号
@@ -909,6 +915,22 @@ public class ShipOrder implements Serializable{
 
 	public void setSellerMessage(String sellerMessage) {
 		this.sellerMessage = sellerMessage;
+	}
+
+	public int getCancelStatus() {
+		return cancelStatus;
+	}
+
+	public void setCancelStatus(int cancelStatus) {
+		this.cancelStatus = cancelStatus;
+	}
+
+	public int getDelStatus() {
+		return delStatus;
+	}
+
+	public void setDelStatus(int delStatus) {
+		this.delStatus = delStatus;
 	}
 	
 }

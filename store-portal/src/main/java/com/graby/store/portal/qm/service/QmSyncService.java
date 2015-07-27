@@ -52,7 +52,13 @@ public interface QmSyncService {
 	 * @throws Exception
 	 */
 	String deliveryQuery(String xmlStr) throws Exception;
-	
+	/**
+	 * 订单查询接口
+	 * @param xmlStr
+	 * @return
+	 * @throws Exception
+	 */
+	String orderprocessQuery(String xmlStr)throws Exception;
 	/**
 	 * 订单取消接口
 	 * @param xmlStr

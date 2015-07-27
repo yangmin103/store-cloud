@@ -709,4 +709,10 @@ public class ShipOrderService {
 		return this.shipOrderDao.selectShipOrderByIdCodeAndtype(params);
 	}
 
+	public List<ShipOrderDetail> shipOrderDetailbyList(Map<String,Object> params){
+		return this.shipOrderDao.shipOrderDetailbyList(params);
+	}
+	public void cancelShipOrder(Map<String,Object> params){
+		this.shipOrderDao.cancelShipOrder(params);
+	}
 }

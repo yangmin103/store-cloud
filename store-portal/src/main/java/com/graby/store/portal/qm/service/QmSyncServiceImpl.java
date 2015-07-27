@@ -83,17 +83,18 @@ public class QmSyncServiceImpl implements QmSyncService {
 	@Override
 	public String combineitem(String xmlStr) throws Exception {
 		// TODO Auto-generated method stub
-		Map<String,Object> xmlMap=XmlUtil.Dom2Map(xmlStr);
-		Map<String,Object> map=(Map<String, Object>)xmlMap.get("request");
+		Map<String,Object> map=XmlUtil.Dom2Map(xmlStr);
 		Item item=new Item();
 		String code=(String) map.get("itemCode");
 		item.setCode(code);
-		item.setTitle("");
+		item.setTitle("组合商品");
 		item.setShortName("");
 		item.setBarCode("");
 		item.setPackageMaterial("");
 		item.setType("");
 		//保存新商品，减去原商品库存数量
+		this.itemService.saveItem(item);
+		Item nItem=null;
 		Map<String,Object> items=(Map<String, Object>) map.get("items");
 		List<Map<String,Object>> itemList=(List<Map<String, Object>>) items.get("item");
 		for(int i=0;itemList!=null && i<itemList.size();i++){
@@ -101,8 +102,16 @@ public class QmSyncServiceImpl implements QmSyncService {
 			Map<String,Object> obj=itemList.get(0);
 			String itemCode=(String) obj.get("itemCode");
 			int quantity=(Integer) obj.get("quantity");
+			 nItem=this.itemService.getItemByCode(itemCode);
+			 //ItemInventory tory=this.inventoryService.in
 			//找到商品的库存信息进行修改，并写入相应的流水信息
+			
 		}
+		ItemInventory inventory=new ItemInventory();
+		inventory.setItem(item);
+		inventory.setNum(1);
+		//inventory.setCentro();
+		//this.inventoryService.
 		return null;
 	}
 
@@ -111,8 +120,7 @@ public class QmSyncServiceImpl implements QmSyncService {
 	 */
 	@Override
 	public String entryorder(String xmlStr) throws Exception{
-		Map<String,Object> xmlMap=XmlUtil.Dom2Map(xmlStr);
-		Map<String,Object> map=(Map<String, Object>)xmlMap.get("request");
+		Map<String,Object> map=XmlUtil.Dom2Map(xmlStr);
 		
 		//1.保存入库单据信息
 		ShipOrder order=new ShipOrder();
@@ -131,8 +139,7 @@ public class QmSyncServiceImpl implements QmSyncService {
 	 */
 	@Override
 	public String returnorder(String xmlStr) throws Exception{
-		Map<String,Object> xmlMap=XmlUtil.Dom2Map(xmlStr);
-		Map<String,Object> map=(Map<String, Object>)xmlMap.get("request");
+		Map<String,Object> map=XmlUtil.Dom2Map(xmlStr);
 		ShipOrder order=new ShipOrder();
 		order.setType(ShipOrder.TYPE_ENTRY_RETURN);
 		buildShipOrderReturn(order, map);
@@ -147,8 +154,7 @@ public class QmSyncServiceImpl implements QmSyncService {
 	 * 出库单创建
 	 */
 	public  String stockout(String xmlStr) throws Exception{
-		Map<String,Object> xmlMap=XmlUtil.Dom2Map(xmlStr);
-		Map<String,Object> map=(Map<String, Object>)xmlMap.get("request");
+		Map<String,Object> map=XmlUtil.Dom2Map(xmlStr);
 		ShipOrder order=new ShipOrder();
 		order.setType(ShipOrder.TYPE_SEND);
 		buildStockoutShipOrder(order, map);
@@ -164,8 +170,7 @@ public class QmSyncServiceImpl implements QmSyncService {
 	 * 发货单创建
 	 */
 	public String deliveryorder(String xmlStr)throws Exception{
-		Map<String,Object> xmlMap=XmlUtil.Dom2Map(xmlStr);
-		Map<String,Object> map=(Map<String, Object>)xmlMap.get("request");
+		Map<String,Object> map=XmlUtil.Dom2Map(xmlStr);
 		ShipOrder order=new ShipOrder();
 		order.setType(ShipOrder.TYPE_DELIVER);
 		buildDeliveryOrderShipOrder(order, map);
@@ -182,8 +187,7 @@ public class QmSyncServiceImpl implements QmSyncService {
 	 */
 	@Override
 	public String deliveryQuery(String xmlStr) throws Exception{
-		Map<String,Object> xmlMap=XmlUtil.Dom2Map(xmlStr);
-		Map<String,Object> map=(Map<String, Object>)xmlMap.get("request");
+		Map<String,Object> map=XmlUtil.Dom2Map(xmlStr);
 		String orderCode=(String) map.get("orderCode");
 		String orderId=(String) map.get("orderId");
 		Map<String,Object> params=new HashMap<String, Object>();
@@ -192,10 +196,92 @@ public class QmSyncServiceImpl implements QmSyncService {
 		params.put("type", ShipOrder.TYPE_DELIVER);
 		//查询发货单
 		List<ShipOrder> list=this.shipOrderService.queryShipOrderCodeIdAndType(params);
+		ShipOrder shipOrder=null;
+		if(list!=null && list.size()>0){
+			shipOrder=list.get(0);
+		}
 		//构建返回列表
-		
-		
-		return null;
+		Map<String,Object> resultMap=new HashMap<String, Object>();
+		Map<String,Object> order=new HashMap<String, Object>();
+		order.put("deliveryOrderCode", shipOrder.getPreDeliveryOrderCode());
+		order.put("deliveryOrderId", shipOrder.getPreDeliveryOrderId());
+		order.put("orderType", shipOrder.getOrderType());
+		order.put("operateTime", shipOrder.getOperateTime());
+		Map<String,Object> invoices=new HashMap<String, Object>();
+		order.put("invoices", invoices);
+		List<Map<String,Object>> invoice=new ArrayList<Map<String,Object>>();
+		Map<String,Object> invoiceItem=new HashMap<String, Object>();
+		invoice.add(invoiceItem);
+		invoices.put("invoice", invoice);
+		invoiceItem.put("header", shipOrder.getInvoiceHeader());
+		invoiceItem.put("amount", shipOrder.getInvoiceAmount());
+		invoiceItem.put("content", shipOrder.getInvoiceContent());
+		resultMap.put("deliveryOrder", order);
+		Map<String,Object> packages=new HashMap<String, Object>();
+		resultMap.put("packages", packages);
+		List<Map<String,Object>> packList=new ArrayList<Map<String,Object>>();
+		packages.put("package", packList);
+		Map<String,Object> packItem=new HashMap<String, Object>();
+		packList.add(packItem);
+		packItem.put("logisticsCode", shipOrder.getLogisticsCode());
+		packItem.put("logisticsName", shipOrder.getLogisticsName());
+		packItem.put("expressCode", shipOrder.getExpressCode());
+		Map<String,Object> items=new HashMap<String, Object>();
+		packages.put("items", items);
+		List<Map<String,Object>> itemList=new ArrayList<Map<String,Object>>();
+		items.put("item", itemList);
+		params.clear();
+		params.put("shipOrderId", orderId);
+		List<ShipOrderDetail> detailList=this.shipOrderService.shipOrderDetailbyList(params);
+		for(int i=0;detailList!=null && i<detailList.size();i++){
+			ShipOrderDetail detail =detailList.get(i);
+			Item it=this.itemService.getItem(detail.getItem().getId());
+			Map<String,Object> itemMap=new HashMap<String, Object>();
+			itemMap.put("itemCode", it.getCode());
+			itemMap.put("quantity", detail.getNum());
+			itemList.add(itemMap);
+		}
+		String result=XmlUtil.converterPayPalm(resultMap, XmlEnum.RESPONSE);
+		return result;
+	}
+	/**
+	 * 订单流水查询接口
+	 * @param xmlStr
+	 * @return
+	 * @throws Exception
+	 */
+	@Override
+	public String orderprocessQuery(String xmlStr)throws Exception{
+		Map<String,Object> map=XmlUtil.Dom2Map(xmlStr);
+		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+		String orderCode=(String) map.get("orderCode");
+		String orderId=(String) map.get("orderId");
+		Map<String,Object> params=new HashMap<String, Object>();
+		params.put("orderCode", orderCode);
+		params.put("orderId", orderId);
+		//单据
+		List<ShipOrder> list=this.shipOrderService.queryShipOrderCodeIdAndType(params);
+		if(list!=null || list.size()==0){
+			return "没有找到此单据!";
+		}
+		ShipOrder order=list.get(0);
+		Map<String,Object> resultMap=new HashMap<String, Object>();
+		Map<String,Object> orderProcess=new HashMap<String, Object>();
+		resultMap.put("orderProcess", orderProcess);
+		orderProcess.put("orderCode", orderCode);
+		orderProcess.put("orderId", orderId);
+		orderProcess.put("orderType", order.getOrderType());
+		Map<String,Object> processes=new HashMap<String, Object>();
+		orderProcess.put("processes", processes);
+		List<Map<String,Object>> process=new ArrayList<Map<String,Object>>();
+		processes.put("processes", processes);
+		Map<String,Object> item=new HashMap<String, Object>();
+		process.add(item);
+		item.put("processStatus", "ACCEPT");//暂时这个状态不做处理
+		item.put("operateTime", sdf.format(order.getOperateTime()));
+		item.put("remark", order.getRemark());
+		String result=XmlUtil.converterPayPalm(resultMap, XmlEnum.RESPONSE);
+		return result;
 	}
 	/**
 	 * 单据取消接口
@@ -227,8 +313,16 @@ public class QmSyncServiceImpl implements QmSyncService {
 		List<ShipOrder> list=this.shipOrderService.queryShipOrderCodeIdAndType(null);
 		if(list!=null && list.size()>0){
 			ShipOrder order=list.get(0);
-			this.shipOrderService.updateShipOrder(order);
-			return null;
+			if(order.getCancelStatus()==0){
+				params.clear();
+				params.put("delStatus", 1);
+				this.shipOrderService.cancelShipOrder(params);
+				//这里应该对单据的前置单据的cancelStatus进行处理，修改为能取消
+				
+				return null;
+			}else{
+				return "此单据不能取消!";
+			}
 		}else{
 			return "没有找到此单据";
 		}
@@ -263,9 +357,8 @@ public class QmSyncServiceImpl implements QmSyncService {
 		itemMap.put("item", mapList);
 		resultMap.put("items", itemMap);
 		String result=XmlUtil.converterPayPalm(resultMap, XmlEnum.RESPONSE);
-		
 		System.err.println(result);
-		return null;
+		return result;
 	}
 	/**
 	 * 仓内加工单
@@ -428,42 +521,43 @@ public class QmSyncServiceImpl implements QmSyncService {
 	 */
 	private String buildShipOrder(ShipOrder order,Map<String,Object> map) throws ParseException{
 		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
-		order.setOrderno((String) map.get("entryOrderCode"));//入库单号
+		Map<String,Object> entity=(Map<String, Object>) map.get("entryOrder");
+		order.setOrderno((String) entity.get("entryOrderCode"));//入库单号
 		
-		String warehouseCode=(String) map.get("warehouseCode");//仓库信息
+		String warehouseCode=(String) entity.get("warehouseCode");//仓库信息
 		Centro centro=this.centroService.findCentroByCode(warehouseCode);
 		order.setCentroId(centro.getId());
-		String orderCreateTime=(String) map.get("orderCreateTime");
+		String orderCreateTime=(String) entity.get("orderCreateTime");
 		if(orderCreateTime!=null && orderCreateTime.length()>0){
 			order.setCreateDate(sdf.parse(orderCreateTime));
 		}
-		order.setOrderType((String) map.get("orderType"));
-		String logisticsCode=(String) map.get("logisticsCode");
+		order.setOrderType((String) entity.get("orderType"));
+		String logisticsCode=(String) entity.get("logisticsCode");
 		if(!logisticsCode.isEmpty()){
 			order.setLogisticsCode(logisticsCode);
 		}
-		String logisticsName=(String) map.get("logisticsName");
+		String logisticsName=(String) entity.get("logisticsName");
 		if(!logisticsName.isEmpty()){
 			order.setLogisticsName(logisticsName);
 		}
-		String expressCode=(String) map.get("expressCode");
+		String expressCode=(String) entity.get("expressCode");
 		if(!expressCode.isEmpty()){
 			order.setExpressCode(expressCode);
 		}
-		String operatorCode=(String) map.get("operatorCode");
+		String operatorCode=(String) entity.get("operatorCode");
 		if(!operatorCode.isEmpty()){
 			order.setOperatorCode(operatorCode);
 		}
-		String operatorName=(String) map.get("operatorName");
+		String operatorName=(String) entity.get("operatorName");
 		if(!operatorName.isEmpty()){
 			order.setOperatorName(operatorName);
 		}
-		String operateTime=(String) map.get("operateTime");
+		String operateTime=(String) entity.get("operateTime");
 		if(!operateTime.isEmpty()){
 			order.setOperateTime(operateTime);
 		}
 		//发件人信息
-		Map<String,Object>  info=(Map<String, Object>) map.get("senderInfo");
+		Map<String,Object>  info=(Map<String, Object>) entity.get("senderInfo");
 		String company=(String) info.get("company");
 		order.setSenderCompany(company);
 		order.setOriginPersion((String) info.get("name"));
@@ -475,7 +569,7 @@ public class QmSyncServiceImpl implements QmSyncService {
 		order.setSenderTown((String) info.get("town"));
 		order.setSenderaddress((String) info.get("detailAddress"));
 		//收货人信息
-		Map<String,Object> receive=(Map<String, Object>) map.get("receiverInfo");
+		Map<String,Object> receive=(Map<String, Object>) entity.get("receiverInfo");
 		order.setReceiveCopmany((String) receive.get("company"));
 		order.setReceiverName((String) receive.get("name"));
 		order.setReceiverZip((String) receive.get("zipCode"));
@@ -486,7 +580,15 @@ public class QmSyncServiceImpl implements QmSyncService {
 		order.setReceiverAddress((String) receive.get("detailAddress"));
 		//入库详情处理
 		Map<String,Object> lineMap=(Map<String, Object>) map.get("orderLines");
-		List<Map<String,Object>> itemList=(List<Map<String, Object>>) lineMap.get("orderLine");
+		Object obj=lineMap.get("orderLine");
+		List<Map<String,Object>> itemList=null;
+		if(obj instanceof java.util.HashMap){
+			itemList=new ArrayList<Map<String,Object>>();
+			itemList.
+			add((Map<String, Object>) obj);
+		}else{
+			itemList=(List<Map<String, Object>>) obj;
+		}
 		for(int i=0;itemList!=null && i<itemList.size();i++){
 			Map<String,Object> item=itemList.get(i);
 			ShipOrderDetail detail=new ShipOrderDetail();
@@ -514,48 +616,57 @@ public class QmSyncServiceImpl implements QmSyncService {
 	 */
 	private String buildShipOrderReturn(ShipOrder order,Map<String,Object> map) throws ParseException{
 		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
-		order.setOrderno((String) map.get("returnOrderCode"));//入库单号
+		Map<String,Object> entity=(Map<String, Object>) map.get("returnOrder");
+		order.setOrderno((String) entity.get("returnOrderCode"));//入库单号
 		
-		String warehouseCode=(String) map.get("warehouseCode");//仓库信息
+		String warehouseCode=(String) entity.get("warehouseCode");//仓库信息
 		Centro centro=this.centroService.findCentroByCode(warehouseCode);
 		order.setCentroId(centro.getId());
-		String orderFlag=(String) map.get("orderFlag");
+		String orderFlag=(String) entity.get("orderFlag");
 		order.setOrderFlag(orderFlag);
-		order.setOrderType((String) map.get("orderType"));
+		order.setOrderType((String) entity.get("orderType"));
 		order.
-		setPreDeliveryOrderCode((String) map.get("preDeliveryOrderCode"));
-		order.setPreDeliveryOrderId((String) map.get("preDeliveryOrderId"));
-		String logisticsCode=(String) map.get("logisticsCode");
+		setPreDeliveryOrderCode((String) entity.get("preDeliveryOrderCode"));
+		order.setPreDeliveryOrderId((String) entity.get("preDeliveryOrderId"));
+		String logisticsCode=(String) entity.get("logisticsCode");
 		if(!logisticsCode.isEmpty()){
 			order.setLogisticsCode(logisticsCode);
 		}
-		String logisticsName=(String) map.get("logisticsName");
+		String logisticsName=(String) entity.get("logisticsName");
 		if(!logisticsName.isEmpty()){
 			order.setLogisticsName(logisticsName);
 		}
-		String expressCode=(String) map.get("expressCode");
+		String expressCode=(String) entity.get("expressCode");
 		if(!expressCode.isEmpty()){
 			order.setExpressCode(expressCode);
 		}
-		order.setReturnReason((String) map.get("returnReason"));
-		order.setBuyerNick((String) map.get("buyerNick"));
-		order.setRemark((String) map.get("remark"));
+		order.setReturnReason((String) entity.get("returnReason"));
+		order.setBuyerNick((String) entity.get("buyerNick"));
+		order.setRemark((String) entity.get("remark"));
 		//发件人信息
-		Map<String,Object>  info=(Map<String, Object>) map.get("senderInfo");
+		Map<String,Object>  info=(Map<String, Object>) entity.get("senderInfo");
 		String company=(String) info.get("company");
 		order.setSenderCompany(company);
 		order.setOriginPersion((String) info.get("name"));
 		order.setSenderZipCode((String) info.get("zipCode"));
 		order.setOriginPhone((String) info.get("mobile"));
 		order.setSenderProvince((String) info.get("province"));
-		order.setSenderCity((String) info.get("city"));
+		String city=(String) info.get("city");
+		order.setSenderCity(city);
 		order.setSenderArea((String) info.get("area"));
 		order.setSenderTown((String) info.get("town"));
 		order.setSenderaddress((String) info.get("detailAddress"));
 		
 		//入库详情处理
-		Map<String,Object> lineMap=(Map<String, Object>) map.get("orderLines");
-		List<Map<String,Object>> itemList=(List<Map<String, Object>>) lineMap.get("orderLine");
+		Object obj=map.get("orderLines");
+		List<Map<String,Object>> itemList=null;
+		if(obj instanceof java.util.HashMap){
+			itemList=new ArrayList<Map<String,Object>>();
+			itemList.
+			add((Map<String, Object>) obj);
+		}else{
+			itemList=(List<Map<String, Object>>) obj;
+		}
 		for(int i=0;itemList!=null && i<itemList.size();i++){
 			Map<String,Object> item=itemList.get(i);
 			ShipOrderDetail detail=new ShipOrderDetail();
@@ -634,8 +745,15 @@ public class QmSyncServiceImpl implements QmSyncService {
 		order.setReceiverDistrict((String) receive.get("area"));
 		order.setReceiverAddress((String) receive.get("detailAddress"));
 		//入库详情处理
-		Map<String,Object> lineMap=(Map<String, Object>) map.get("orderLines");
-		List<Map<String,Object>> itemList=(List<Map<String, Object>>) lineMap.get("orderLine");
+		Object obj=map.get("orderLines");
+		List<Map<String,Object>> itemList=null;
+		if(obj instanceof java.util.HashMap){
+			itemList=new ArrayList<Map<String,Object>>();
+			itemList.
+			add((Map<String, Object>) obj);
+		}else{
+			itemList=(List<Map<String, Object>>) obj;
+		}
 		for(int i=0;itemList!=null && i<itemList.size();i++){
 			Map<String,Object> item=itemList.get(i);
 			ShipOrderDetail detail=new ShipOrderDetail();
@@ -689,7 +807,14 @@ public class QmSyncServiceImpl implements QmSyncService {
 		order.setInvoiceFlag((String) map.get("invoiceFlag"));
 		//发票信息处理
 		Map<String,Object> invoice=(Map<String, Object>) map.get("invoices");
-		List<Map<String,Object>> invoiceList=(List<Map<String, Object>>) invoice.get("invoice");
+		Object object=invoice.get("invoice");
+		List<Map<String,Object>> invoiceList=null;
+		if(object instanceof java.util.HashMap){
+			invoiceList=new ArrayList<Map<String,Object>>();
+			invoiceList.add((Map<String, Object>) object);
+		}else{
+			
+		}
 		//这里只处理一张发票信息
 		if(invoiceList!=null && invoiceList.size()>0){
 			Map<String,Object> obj=invoiceList.get(0);
@@ -731,8 +856,15 @@ public class QmSyncServiceImpl implements QmSyncService {
 		order.setReceiverAddress((String) receive.get("detailAddress"));
 		
 		//发货详情处理
-		Map<String,Object> lineMap=(Map<String, Object>) map.get("orderLines");
-		List<Map<String,Object>> itemList=(List<Map<String, Object>>) lineMap.get("orderLine");
+		Object obj=map.get("orderLines");
+		List<Map<String,Object>> itemList=null;
+		if(obj instanceof java.util.HashMap){
+			itemList=new ArrayList<Map<String,Object>>();
+			itemList.
+			add((Map<String, Object>) obj);
+		}else{
+			itemList=(List<Map<String, Object>>) obj;
+		}
 		for(int i=0;itemList!=null && i<itemList.size();i++){
 			Map<String,Object> item=itemList.get(i);
 			ShipOrderDetail detail=new ShipOrderDetail();
@@ -751,6 +883,15 @@ public class QmSyncServiceImpl implements QmSyncService {
 		}
 		
 		return null;
+	}
+	/**
+	 * 追加返回头部信息
+	 * @param resultMap
+	 */
+	private void addHeadMapInfo(Map<String,Object> resultMap,String flag){
+		resultMap.put("flag", flag);
+		resultMap.put("code", "");
+		resultMap.put("message", flag.equals("SUCCESS")?"success":"");
 	}
 }
 

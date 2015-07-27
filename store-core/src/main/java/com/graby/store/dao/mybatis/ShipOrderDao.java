@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.graby.store.base.MyBatisRepository;
 import com.graby.store.entity.ShipOrder;
+import com.graby.store.entity.ShipOrderDetail;
 
 @MyBatisRepository
 public interface ShipOrderDao {
@@ -18,11 +19,13 @@ public interface ShipOrderDao {
 	void deleteDetail(Long detailId);
 	void sendEntryOrder(Long orderId);
 	void setOrderStatus(Long orderId, String status);
+	
 	void setTradeStatus(Long orderId, String status);
 	void setSendOrderExpress(Map<String,String> orders);
 	void chooseExpress(Long orderId, String expressCompany);
 	void increaseEntryOrderDetail(Long detailId, long num);
-	
+	List<ShipOrderDetail> shipOrderDetailbyList(Map<String,Object> params);
+	void cancelShipOrder(Map<String,Object> params);
 	Long getEntryOrderDetail(Long orderId, Long itemId);
 	
 	

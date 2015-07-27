@@ -357,4 +357,22 @@
    			and t.type=#{type}
    		</if>
    </select>
+   
+ <select id="shipOrderDetailbyList" parameterType="java.util.Map" resultType="ShipOrderDetail">
+		SELECT *
+		FROM sc_ship_order_detail 
+		WHERE 1=1
+		<if test="shipOrderId!=null">
+			and order_id=#{shipOrderId}
+		</if>
+	</select>	
+	 <!--  单据取消，修改状态。-->
+	<update id="cancelShipOrder" parameterType="map">
+        update sc_ship_order set delStatus=#{delStatus} where id=#{id} 
+    </update>     
+    <!-- 设置单据能否取消 -->
+	<update id="setOrderCancel" parameterType="map">
+        update sc_ship_order set cancelStatus=#{cancelStatus} where id=#{id} 
+    </update>
+	
 </mapper> 

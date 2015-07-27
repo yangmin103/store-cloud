@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.graby.store.dao.mybatis.InventoryDao;
+import com.graby.store.entity.ItemInventory;
 import com.graby.store.entity.ShipOrder;
 import com.graby.store.entity.ShipOrderDetail;
 import com.graby.store.service.inventory.Accounts.Account;
@@ -105,5 +106,10 @@ public class InventoryService {
 		return inventoryDao.getValue(centroId, itemId, account);
 	}
 	
+	
+	public void insert(ItemInventory inventory){
+		this.inventoryDao.insert(inventory.getCentro().getId(), inventory.getUser().getId(), 
+				inventory.getItem().getId(), inventory.getAccount(), inventory.getNum());
+	}
 	
 }

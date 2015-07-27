@@ -22,26 +22,28 @@
 	</properties>
 
 	<dependencies>
-<dependency>
-		<groupId>org.apache.httpcomponents</groupId>
-		<artifactId>httpclient</artifactId>
-		<version>4.1.2</version>
-	</dependency>
-	<dependency>
-		<groupId>org.apache.httpcomponents</groupId>
-		<artifactId>httpclient-cache</artifactId>
-		<version>4.1.2</version>
-	</dependency>
-	<dependency>
-		<groupId>org.apache.httpcomponents</groupId>
-		<artifactId>httpmime</artifactId>
-		<version>4.1.2</version>
-	</dependency>
-	<dependency>
-	<groupId>org.apache.httpcomponents</groupId>
-	<artifactId>httpcore</artifactId>
-	<version>4.1.2</version>
-</dependency>
+		
+
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.1.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient-cache</artifactId>
+			<version>4.1.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpmime</artifactId>
+			<version>4.1.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpcore</artifactId>
+			<version>4.1.2</version>
+		</dependency>
 		<dependency>
 			<groupId>com.graby</groupId>
 			<artifactId>store-core</artifactId>
@@ -148,7 +150,7 @@
 			<version>2.5.16</version>
 		</dependency>
 
-	
+
 
 		<!-- WEB begin -->
 		<dependency>
@@ -265,7 +267,7 @@
 			<artifactId>jetty-jsp</artifactId>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<!-- TEST end -->
 	</dependencies>
 
@@ -347,7 +349,7 @@
 				</dependencies>
 
 
-	
+
 			</plugin>
 
 
